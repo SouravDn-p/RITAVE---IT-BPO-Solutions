@@ -6,7 +6,7 @@ import client from "@/lib/mongoClient";
 export async function POST(req) {
   const { email, password } = await req.json();
 
-  const db = client.db("TaskEarnDB");
+  const db = client.db("RativeDb");
   const user = await db.collection("Users").findOne({ email });
 
   if (!user) {

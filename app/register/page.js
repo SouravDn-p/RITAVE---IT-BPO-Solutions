@@ -80,7 +80,7 @@ export default function RegisterPage() {
 
   const handleGoogleRegister = async () => {
     try {
-      await signIn("google", { callbackUrl: "/dashboard" });
+      await signIn("google", { callbackUrl: "/" });
     } catch (err) {
       setApiError("Google registration failed");
     }

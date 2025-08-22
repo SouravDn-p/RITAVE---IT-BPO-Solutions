@@ -1,7 +1,7 @@
+// app/careers/page.jsx
 "use client";
 
 import type React from "react";
-
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,6 +28,8 @@ import {
   Upload,
 } from "lucide-react";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useSubmitJobApplicationMutation } from "@/redux/api/api";
 
 const benefits = [
   {
@@ -154,6 +156,8 @@ const jobListings = [
 export default function CareersPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
+  const { data: session } = useSession();
+  const [submitJobApplication] = useSubmitJobApplicationMutation();
 
   const handleApplicationSubmit = async (
     e: React.FormEvent<HTMLFormElement>
@@ -171,20 +175,11 @@ export default function CareersPage() {
       position: formData.get("position"),
       experience: formData.get("experience"),
       coverLetter: formData.get("coverLetter"),
-      // In a real implementation, you'd handle file upload separately
       resumeFile: formData.get("resume")?.name || "resume.pdf",
     };
 
     try {
-      const response = await fetch("/api/career-applications", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(applicationData),
-      });
-
-      const result = await response.json();
+      const result = await submitJobApplication(applicationData).unwrap();
 
       if (result.success) {
         setSubmitMessage(
@@ -195,7 +190,7 @@ export default function CareersPage() {
         setSubmitMessage("Failed to submit application. Please try again.");
       }
     } catch (error) {
-      console.error("sd Error submitting application:", error);
+      console.error("Error submitting application:", error);
       setSubmitMessage("An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -203,8 +198,7 @@ export default function CareersPage() {
   };
 
   const handleApplyNow = (jobTitle: string) => {
-    console.log(`sd Applying for position: ${jobTitle}`);
-    // Scroll to application form
+    console.log(`Applying for position: ${jobTitle}`);
     document
       .getElementById("application-form")
       ?.scrollIntoView({ behavior: "smooth" });
@@ -402,6 +396,7 @@ export default function CareersPage() {
                     </label>
                     <Input
                       id="firstName"
+                      name="firstName"
                       placeholder="Enter your first name"
                       className="bg-background"
                       required
@@ -416,6 +411,7 @@ export default function CareersPage() {
                     </label>
                     <Input
                       id="lastName"
+                      name="lastName"
                       placeholder="Enter your last name"
                       className="bg-background"
                       required
@@ -433,6 +429,7 @@ export default function CareersPage() {
                     </label>
                     <Input
                       id="email"
+                      name="email"
                       type="email"
                       placeholder="Enter your email address"
                       className="bg-background"
@@ -448,6 +445,7 @@ export default function CareersPage() {
                     </label>
                     <Input
                       id="phone"
+                      name="phone"
                       type="tel"
                       placeholder="Enter your phone number"
                       className="bg-background"
@@ -463,7 +461,7 @@ export default function CareersPage() {
                     >
                       Position Applied For *
                     </label>
-                    <Select required>
+                    <Select name="position" required>
                       <SelectTrigger className="bg-background">
                         <SelectValue placeholder="Select a position" />
                       </SelectTrigger>
@@ -491,7 +489,7 @@ export default function CareersPage() {
                     >
                       Years of Experience
                     </label>
-                    <Select>
+                    <Select name="experience">
                       <SelectTrigger className="bg-background">
                         <SelectValue placeholder="Select experience level" />
                       </SelectTrigger>
@@ -515,6 +513,7 @@ export default function CareersPage() {
                   </label>
                   <Textarea
                     id="coverLetter"
+                    name="coverLetter"
                     placeholder="Tell us about yourself and why you're interested in joining our team..."
                     rows={6}
                     className="bg-background"
@@ -538,6 +537,7 @@ export default function CareersPage() {
                     </p>
                     <Input
                       id="resume"
+                      name="resume"
                       type="file"
                       accept=".pdf,.doc,.docx"
                       className="hidden"
@@ -549,6 +549,7 @@ export default function CareersPage() {
                   <input
                     type="checkbox"
                     id="terms"
+                    name="terms"
                     className="rounded border-border text-accent focus:ring-accent"
                     required
                   />

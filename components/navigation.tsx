@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Menu, X, User, Settings, LogOut, Shield } from "lucide-react";
+import { Menu, X, User, Settings, LogOut, Shield, Home } from "lucide-react";
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -108,7 +108,7 @@ export function Navigation() {
                   {session.user?.role === "admin" && (
                     <>
                       <DropdownMenuItem asChild>
-                        <Link href="/dashboard" className="cursor-pointer">
+                        <Link href="/admin" className="cursor-pointer">
                           <Shield className="mr-2 h-4 w-4" />
                           Admin Dashboard
                         </Link>
@@ -117,9 +117,9 @@ export function Navigation() {
                     </>
                   )}
                   <DropdownMenuItem asChild>
-                    <Link href="/profile" className="cursor-pointer">
-                      <User className="image.png" />
-                      Profile
+                    <Link href="/" className="cursor-pointer">
+                      <Home className="image.png" />
+                      Home
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
@@ -219,7 +219,7 @@ export function Navigation() {
                   </div>
                   {session.user?.role === "admin" && (
                     <Link
-                      href="/dashboard"
+                      href="/admin"
                       className="block px-3 py-2 text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                     >
@@ -228,12 +228,12 @@ export function Navigation() {
                     </Link>
                   )}
                   <Link
-                    href="/profile"
+                    href="/"
                     className="block px-3 py-2 text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <User className="inline mr-2 h-4 w-4" />
-                    Profile
+                    Home
                   </Link>
                   <Link
                     href="/settings"
@@ -272,10 +272,7 @@ export function Navigation() {
                     className="w-full bg-transparent"
                     asChild
                   >
-                    <Link
-                      href="/login"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
+                    <Link href="/login" onClick={() => setIsMenuOpen(false)}>
                       Sign In
                     </Link>
                   </Button>

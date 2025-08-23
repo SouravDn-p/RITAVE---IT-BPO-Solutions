@@ -1,3 +1,4 @@
+// app/register/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -14,6 +15,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
@@ -26,6 +28,7 @@ import {
   Lock,
   User,
 } from "lucide-react";
+import { useRegisterUserMutation } from "@/redux/api/api";
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -33,6 +36,7 @@ export default function RegisterPage() {
   const [apiError, setApiError] = useState(null);
   const [success, setSuccess] = useState(false);
   const router = useRouter();
+  const [registerUser] = useRegisterUserMutation();
 
   const {
     register,
@@ -54,27 +58,22 @@ export default function RegisterPage() {
     }
 
     try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          password: data.password,
-        }),
-      });
-      const result = await res.json();
+      const result = await registerUser({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      }).unwrap();
 
-      if (res.ok) {
+      if (result.message) {
         setSuccess(true);
         setTimeout(() => {
           router.push("/login");
         }, 2000);
       } else {
-        setApiError(result.error || "Registration failed");
+        setApiError("Registration failed");
       }
     } catch (err) {
-      setApiError("Network error");
+      setApiError(err.data?.error || "Network error");
     }
   };
 

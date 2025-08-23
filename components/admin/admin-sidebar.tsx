@@ -18,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
 const navigation = [
   {
@@ -25,11 +26,11 @@ const navigation = [
     href: "/admin",
     icon: LayoutDashboard,
   },
-  {
-    name: "Image Management",
-    href: "/admin/images",
-    icon: ImageIcon,
-  },
+  // {
+  //   name: "Image Management",
+  //   href: "/admin/images",
+  //   icon: ImageIcon,
+  // },
   {
     name: "Inquiries",
     href: "/admin/inquiries",
@@ -37,29 +38,32 @@ const navigation = [
     badge: "12",
   },
   {
-    name: "Career Applications", // Updated name to be more descriptive
+    name: "Career Applications",
     href: "/admin/applications",
     icon: Users,
-    badge: "24", // Updated badge count to reflect new applications
+    badge: "24",
   },
   {
     name: "Content Management",
     href: "/admin/content",
     icon: FileText,
   },
-  {
-    name: "Analytics",
-    href: "/admin/analytics",
-    icon: BarChart3,
-  },
-  {
-    name: "Settings",
-    href: "/admin/settings",
-    icon: Settings,
-  },
+  // {
+  //   name: "Analytics",
+  //   href: "/admin/analytics",
+  //   icon: BarChart3,
+  // },
+  // {
+  //   name: "Settings",
+  //   href: "/admin/settings",
+  //   icon: Settings,
+  // },
 ];
 
 export function AdminSidebar() {
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "admin";
+  const userEmail = session?.user?.email;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -165,7 +169,7 @@ export function AdminSidebar() {
                   Admin User
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  admin@ritave.com
+                  {userEmail ? userEmail : "admin@ritave.com"}
                 </p>
               </div>
             </div>

@@ -292,20 +292,6 @@ export default function LoginPage() {
                 )}
               </Button>
             </form>
-
-            <div className="mt-4 p-3 bg-muted/50 rounded-lg">
-              <p className="text-xs text-muted-foreground text-center mb-2">
-                Demo Credentials:
-              </p>
-              <div className="text-xs space-y-1">
-                <p>
-                  <strong>Admin:</strong> admin@ritave.com / admin123
-                </p>
-                <p>
-                  <strong>User:</strong> user@example.com / user123
-                </p>
-              </div>
-            </div>
           </CardContent>
 
           <CardFooter className="justify-center">

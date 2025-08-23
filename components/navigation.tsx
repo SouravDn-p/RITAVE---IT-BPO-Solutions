@@ -181,13 +181,7 @@ export function Navigation() {
               >
                 Home
               </Link>
-              <Link
-                href="/about"
-                className="block px-3 py-2 text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                About Us
-              </Link>
+
               <Link
                 href="/services"
                 className="block px-3 py-2 text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
@@ -195,19 +189,26 @@ export function Navigation() {
               >
                 Services
               </Link>
-              <Link
+              {/* <Link
                 href="/careers"
                 className="block px-3 py-2 text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Careers
-              </Link>
+              </Link> */}
               <Link
                 href="/contact"
                 className="block px-3 py-2 text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Contact
+              </Link>
+              <Link
+                href="/about"
+                className="block px-3 py-2 text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                About Us
               </Link>
               {session ? (
                 <>

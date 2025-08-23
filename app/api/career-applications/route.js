@@ -1,4 +1,3 @@
-// app/api/career-applications/route.js
 import { NextResponse } from "next/server";
 import client from "@/lib/mongoClient";
 
@@ -6,6 +5,14 @@ export async function POST(request) {
   try {
     const db = client.db("RativeDb");
     const body = await request.json();
+
+    // Validate required fields
+    if (!body.firstName || !body.lastName || !body.email || !body.position) {
+      return NextResponse.json(
+        { success: false, message: "Missing required fields" },
+        { status: 400 }
+      );
+    }
 
     const application = {
       _id: `APP-${Date.now()}`,
@@ -46,6 +53,14 @@ export async function GET() {
       .sort({ submittedAt: -1 })
       .toArray();
 
+    if (!applications.length) {
+      return NextResponse.json({
+        success: true,
+        message: "No applications found",
+        applications: [],
+      });
+    }
+
     const formattedApplications = applications.map((app) => ({
       ...app,
       _id: app._id.toString(),
@@ -59,6 +74,40 @@ export async function GET() {
     console.error("Error fetching applications:", error);
     return NextResponse.json(
       { success: false, message: "Failed to fetch applications" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request) {
+  try {
+    const db = client.db("RativeDb");
+    const { id } = await request.json();
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, message: "Application ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const result = await db.collection("JobApplications").deleteOne({ id });
+
+    if (result.deletedCount === 0) {
+      return NextResponse.json(
+        { success: false, message: "Application not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Application deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting application:", error);
+    return NextResponse.json(
+      { success: false, message: "Failed to delete application" },
       { status: 500 }
     );
   }

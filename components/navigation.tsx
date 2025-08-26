@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Menu, X, User, Settings, LogOut, Shield, Home } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -58,13 +59,6 @@ export function Navigation() {
               Services
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
             </Link>
-            {/* <Link
-              href="/careers"
-              className="text-foreground hover:text-primary transition-colors relative group py-2"
-            >
-              Careers
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
-            </Link> */}
             <Link
               href="/contact"
               className="text-foreground hover:text-primary transition-colors relative group py-2"
@@ -79,6 +73,7 @@ export function Navigation() {
               About Us
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
             </Link>
+            <ThemeToggle />
             {status === "loading" ? (
               <div className="w-8 h-8 animate-pulse bg-muted rounded-full" />
             ) : session ? (
@@ -105,7 +100,7 @@ export function Navigation() {
                     </div>
                   </div>
                   <DropdownMenuSeparator />
-                  {session.user?.role === "admin" && (
+                  {session?.user?.role === "admin" && (
                     <>
                       <DropdownMenuItem asChild>
                         <Link href="/admin" className="cursor-pointer">
@@ -118,14 +113,8 @@ export function Navigation() {
                   )}
                   <DropdownMenuItem asChild>
                     <Link href="/" className="cursor-pointer">
-                      <Home className="image.png" />
+                      <Home className="mr-2 h-4 w-4" />
                       Home
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/settings" className="cursor-pointer">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Settings
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -156,6 +145,7 @@ export function Navigation() {
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
             <Button
               variant="ghost"
               size="sm"
@@ -181,7 +171,6 @@ export function Navigation() {
               >
                 Home
               </Link>
-
               <Link
                 href="/services"
                 className="block px-3 py-2 text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
@@ -189,13 +178,6 @@ export function Navigation() {
               >
                 Services
               </Link>
-              {/* <Link
-                href="/careers"
-                className="block px-3 py-2 text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Careers
-              </Link> */}
               <Link
                 href="/contact"
                 className="block px-3 py-2 text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
@@ -233,17 +215,12 @@ export function Navigation() {
                     className="block px-3 py-2 text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <User className="inline mr-2 h-4 w-4" />
+                    <Home className="inline mr-2 h-4 w-4" />
                     Home
                   </Link>
-                  <Link
-                    href="/settings"
-                    className="block px-3 py-2 text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Settings className="inline mr-2 h-4 w-4" />
-                    Settings
-                  </Link>
+                  <div className="px-3 py-2">
+                    <ThemeToggle />
+                  </div>
                   <button
                     onClick={() => {
                       handleSignOut();
@@ -257,6 +234,9 @@ export function Navigation() {
                 </>
               ) : (
                 <div className="px-3 py-2">
+                  <div className="mb-2">
+                    <ThemeToggle />
+                  </div>
                   <Button
                     size="sm"
                     className="w-full mb-2 cursor-pointer"

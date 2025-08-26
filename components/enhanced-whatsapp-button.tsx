@@ -1,27 +1,34 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { MessageSquare, X } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { MessageSquare, X } from "lucide-react";
 
 export function EnhancedWhatsAppButton() {
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent(
-      "Hi! I'm interested in RITAVE's IT & BPO services. Could you please provide more information?",
-    )
-    const whatsappUrl = `https://wa.me/15551234567?text=${message}`
-    window.open(whatsappUrl, "_blank")
-  }
+      "Hi! I'm interested in RITAVE's IT & BPO services. Could you please provide more information?"
+    );
+    const whatsappUrl = `https://wa.me/+917488438971?text=${message}`;
+    window.open(whatsappUrl, "_blank");
+  };
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {isExpanded && (
         <div className="mb-4 bg-card border border-border rounded-lg p-4 shadow-lg max-w-xs animate-in slide-in-from-bottom-2 duration-200">
           <div className="flex items-start justify-between mb-2">
-            <h3 className="font-semibold text-foreground text-sm">Need Help?</h3>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => setIsExpanded(false)}>
+            <h3 className="font-semibold text-foreground text-sm">
+              Need Help?
+            </h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 w-6 p-0"
+              onClick={() => setIsExpanded(false)}
+            >
               <X className="h-3 w-3" />
             </Button>
           </div>
@@ -42,5 +49,5 @@ export function EnhancedWhatsAppButton() {
         <MessageSquare className="h-6 w-6" />
       </Button>
     </div>
-  )
+  );
 }

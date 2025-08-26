@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { Card, CardContent } from "@/components/ui/card";
@@ -32,20 +35,23 @@ const contactMethods = [
     description: "Get in touch via email for detailed inquiries",
     contact: "contact@ritave.com",
     action: "Send Email",
+    href: "mailto:contact@ritave.com",
   },
   {
     icon: Phone,
     title: "Call Us",
     description: "Speak directly with our team",
-    contact: "+1 (555) 123-4567",
+    contact: "+91 7488438971",
     action: "Call Now",
+    href: "tel:+91 7488438971",
   },
   {
     icon: MessageSquare,
     title: "WhatsApp",
     description: "Quick support via WhatsApp",
-    contact: "+880 1328764976",
+    contact: "+91 7488438971",
     action: "Chat Now",
+    href: "https://wa.me/+917488438971",
   },
 ];
 
@@ -73,6 +79,66 @@ const officeInfo = [
 ];
 
 export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    company: "",
+    industry: "",
+    service: "",
+    message: "",
+    newsletter: false,
+  });
+  const [status, setStatus] = useState(null);
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleSelectChange = (name) => (value) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus(null);
+    try {
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        setStatus({ type: "success", message: "Message sent successfully!" });
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          company: "",
+          industry: "",
+          service: "",
+          message: "",
+          newsletter: false,
+        });
+      } else {
+        throw new Error("Failed to send message");
+      }
+    } catch (error) {
+      setStatus({
+        type: "error",
+        message: "Failed to send message. Please try again.",
+      });
+    }
+  };
+
   return (
     <main className="min-h-screen">
       <Navigation />
@@ -83,8 +149,15 @@ export default function ContactPage() {
           size="lg"
           className="rounded-full w-14 h-14 bg-green-500 hover:bg-green-600 text-white shadow-lg"
           aria-label="Contact us on WhatsApp"
+          asChild
         >
-          <MessageSquare className="h-6 w-6" />
+          <a
+            href="https://wa.me/+917488438971"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <MessageSquare className="h-6 w-6" />
+          </a>
         </Button>
       </div>
 
@@ -138,8 +211,14 @@ export default function ContactPage() {
                       <p className="font-medium text-foreground mb-4">
                         {method.contact}
                       </p>
-                      <Button variant="outline" size="sm">
-                        {method.action}
+                      <Button variant="outline" size="sm" asChild>
+                        <a
+                          href={method.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {method.action}
+                        </a>
                       </Button>
                     </div>
                   </CardContent>
@@ -172,7 +251,18 @@ export default function ContactPage() {
 
               <Card className="border-border">
                 <CardContent className="pt-6">
-                  <form className="space-y-6">
+                  <form className="space-y-6" onSubmit={handleSubmit}>
+                    {status && (
+                      <div
+                        className={`text-sm p-3 rounded ${
+                          status.type === "success"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {status.message}
+                      </div>
+                    )}
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <label
@@ -183,9 +273,12 @@ export default function ContactPage() {
                         </label>
                         <Input
                           id="firstName"
+                          name="firstName"
                           placeholder="Enter your first name"
                           className="bg-background"
                           required
+                          value={formData.firstName}
+                          onChange={handleChange}
                         />
                       </div>
                       <div className="space-y-2">
@@ -197,9 +290,12 @@ export default function ContactPage() {
                         </label>
                         <Input
                           id="lastName"
+                          name="lastName"
                           placeholder="Enter your last name"
                           className="bg-background"
                           required
+                          value={formData.lastName}
+                          onChange={handleChange}
                         />
                       </div>
                     </div>
@@ -214,10 +310,13 @@ export default function ContactPage() {
                         </label>
                         <Input
                           id="email"
+                          name="email"
                           type="email"
                           placeholder="Enter your email address"
                           className="bg-background"
                           required
+                          value={formData.email}
+                          onChange={handleChange}
                         />
                       </div>
                       <div className="space-y-2">
@@ -229,9 +328,12 @@ export default function ContactPage() {
                         </label>
                         <Input
                           id="phone"
+                          name="phone"
                           type="tel"
                           placeholder="Enter your phone number"
                           className="bg-background"
+                          value={formData.phone}
+                          onChange={handleChange}
                         />
                       </div>
                     </div>
@@ -246,8 +348,11 @@ export default function ContactPage() {
                         </label>
                         <Input
                           id="company"
+                          name="company"
                           placeholder="Enter your company name"
                           className="bg-background"
+                          value={formData.company}
+                          onChange={handleChange}
                         />
                       </div>
                       <div className="space-y-2">
@@ -257,7 +362,11 @@ export default function ContactPage() {
                         >
                           Industry
                         </label>
-                        <Select>
+                        <Select
+                          name="industry"
+                          value={formData.industry}
+                          onValueChange={handleSelectChange("industry")}
+                        >
                           <SelectTrigger className="bg-background">
                             <SelectValue placeholder="Select your industry" />
                           </SelectTrigger>
@@ -286,7 +395,11 @@ export default function ContactPage() {
                       >
                         Service Interest
                       </label>
-                      <Select>
+                      <Select
+                        name="service"
+                        value={formData.service}
+                        onValueChange={handleSelectChange("service")}
+                      >
                         <SelectTrigger className="bg-background">
                           <SelectValue placeholder="Select service you're interested in" />
                         </SelectTrigger>
@@ -325,10 +438,13 @@ export default function ContactPage() {
                       </label>
                       <Textarea
                         id="message"
+                        name="message"
                         placeholder="Tell us about your project requirements, timeline, and any specific needs..."
                         rows={5}
                         className="bg-background"
                         required
+                        value={formData.message}
+                        onChange={handleChange}
                       />
                     </div>
 
@@ -336,7 +452,10 @@ export default function ContactPage() {
                       <input
                         type="checkbox"
                         id="newsletter"
+                        name="newsletter"
                         className="rounded border-border text-accent focus:ring-accent"
+                        checked={formData.newsletter}
+                        onChange={handleChange}
                       />
                       <label
                         htmlFor="newsletter"
@@ -415,7 +534,7 @@ export default function ContactPage() {
                       <Phone className="h-5 w-5 text-accent" />
                       <div>
                         <p className="font-medium text-foreground">Phone</p>
-                        <p className="text-muted-foreground">+880 1328764976</p>
+                        <p className="text-muted-foreground">+91 7488438971</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">

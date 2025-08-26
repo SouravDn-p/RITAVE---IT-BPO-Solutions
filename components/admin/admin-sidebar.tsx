@@ -44,10 +44,16 @@ const navigation = [
     badge: "24",
   },
   {
-    name: "Content Management",
-    href: "/admin/content",
+    name: "Create Job",
+    href: "/admin/create-job",
     icon: FileText,
+    badge: "4",
   },
+  // {
+  //   name: "Content Management",
+  //   href: "/admin/content",
+  //   icon: FileText,
+  // },
   // {
   //   name: "Analytics",
   //   href: "/admin/analytics",

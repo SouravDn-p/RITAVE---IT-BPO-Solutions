@@ -111,7 +111,7 @@ export default function LoginPage() {
           </div>
           <Link href={"/"}>
             <Button className="w-full h-11 font-semibold hover:scale-[1.02] transition-transform">
-              Go to Dashboard
+              Go to Home
             </Button>
           </Link>
         </Card>
@@ -159,7 +159,6 @@ export default function LoginPage() {
                 <AlertDescription>{errors.general}</AlertDescription>
               </Alert>
             )}
-
             <div className="grid grid-cols-1 gap-4">
               <Button
                 variant="outline"
@@ -168,7 +167,7 @@ export default function LoginPage() {
                     callbackUrl: "/",
                   })
                 }
-                className="w-full bg-card/10 border-border/20 text-foreground hover:bg-card/20 transition-all duration-200"
+                className="w-full bg-card/10 border-border/20 hover:bg-card/20 hover:text-teal-950 transition-all duration-200"
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path
@@ -185,7 +184,7 @@ export default function LoginPage() {
                   />
                   <path
                     fill="currentColor"
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.60 3.3-4.53 6.16-4.53z"
                   />
                 </svg>
                 Continue with Google

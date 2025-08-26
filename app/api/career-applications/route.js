@@ -22,7 +22,7 @@ export async function POST(request) {
       phone: body.phone || "",
       position: body.position,
       experience: body.experience || "",
-      resume: body.resumeFile || "resume.pdf",
+      resume: body.resumeBase64 || "",
       coverLetter: body.coverLetter || "",
       submittedAt: new Date(),
       status: "new",

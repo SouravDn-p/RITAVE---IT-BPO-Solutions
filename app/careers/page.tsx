@@ -1,4 +1,3 @@
-// app/careers/page.jsx
 "use client";
 
 import type React from "react";
@@ -26,10 +25,14 @@ import {
   DollarSign,
   ArrowRight,
   Upload,
+  AlertTriangle,
 } from "lucide-react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useSubmitJobApplicationMutation } from "@/redux/api/api";
+import {
+  useSubmitJobApplicationMutation,
+  useGetJobsQuery,
+} from "@/redux/api/api";
 
 const benefits = [
   {
@@ -58,106 +61,18 @@ const benefits = [
   },
 ];
 
-const jobListings = [
-  {
-    title: "Medical Claims Processor",
-    department: "BPO Services",
-    location: "Remote",
-    type: "Full-time",
-    experience: "1-3 years",
-    description:
-      "Process medical claims with high accuracy, ensure HIPAA compliance, and maintain quality standards for US healthcare clients.",
-    requirements: [
-      "Experience in medical claims processing",
-      "Knowledge of HIPAA regulations",
-      "Strong attention to detail",
-      "Excellent English communication skills",
-      "Ability to work in US time zones",
-    ],
-    responsibilities: [
-      "Process medical claims accurately and efficiently",
-      "Verify patient information and insurance details",
-      "Handle claim denials and appeals",
-      "Maintain HIPAA compliance at all times",
-      "Meet daily productivity and quality targets",
-    ],
-  },
-  {
-    title: "Full Stack Web Developer",
-    department: "IT Services",
-    location: "Remote",
-    type: "Full-time",
-    experience: "2-5 years",
-    description:
-      "Develop modern web applications using React, Next.js, and other cutting-edge technologies for global clients.",
-    requirements: [
-      "Proficiency in React, Next.js, TypeScript",
-      "Experience with Node.js and databases",
-      "Knowledge of modern web development practices",
-      "Strong problem-solving skills",
-      "Portfolio of previous work",
-    ],
-    responsibilities: [
-      "Build responsive web applications",
-      "Collaborate with design and product teams",
-      "Write clean, maintainable code",
-      "Participate in code reviews",
-      "Stay updated with latest technologies",
-    ],
-  },
-  {
-    title: "BPO Operations Specialist",
-    department: "BPO Services",
-    location: "Remote",
-    type: "Full-time",
-    experience: "2-4 years",
-    description:
-      "Manage BPO operations, ensure quality standards, and support various business processes for international clients.",
-    requirements: [
-      "Experience in BPO operations",
-      "Strong analytical and organizational skills",
-      "Excellent communication abilities",
-      "Knowledge of quality management systems",
-      "Flexibility to work different time zones",
-    ],
-    responsibilities: [
-      "Oversee daily BPO operations",
-      "Monitor quality and productivity metrics",
-      "Train and support team members",
-      "Implement process improvements",
-      "Maintain client relationships",
-    ],
-  },
-  {
-    title: "Customer Support Representative",
-    department: "Support Services",
-    location: "Remote",
-    type: "Full-time",
-    experience: "1-2 years",
-    description:
-      "Provide exceptional customer support to global clients through various channels including chat, email, and phone.",
-    requirements: [
-      "Excellent English communication skills",
-      "Customer service experience",
-      "Technical troubleshooting abilities",
-      "Patience and empathy",
-      "Availability for flexible schedules",
-    ],
-    responsibilities: [
-      "Handle customer inquiries and issues",
-      "Provide technical support and guidance",
-      "Maintain customer satisfaction scores",
-      "Document and escalate complex issues",
-      "Contribute to knowledge base articles",
-    ],
-  },
-];
-
 export default function CareersPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
   const { data: session } = useSession();
   const [submitJobApplication] = useSubmitJobApplicationMutation();
+  const {
+    data: jobsData,
+    error: jobsError,
+    isLoading: jobsLoading,
+  } = useGetJobsQuery();
+
+  const jobs = jobsData?.jobs || [];
 
   const handleApplicationSubmit = async (
     e: React.FormEvent<HTMLFormElement>
@@ -175,8 +90,26 @@ export default function CareersPage() {
       position: formData.get("position"),
       experience: formData.get("experience"),
       coverLetter: formData.get("coverLetter"),
-      resumeFile: formData.get("resume")?.name || "resume.pdf",
+      resumeBase64: "",
     };
+
+    const resumeFile = formData.get("resume");
+
+    if (resumeFile instanceof File && resumeFile.size > 0) {
+      try {
+        applicationData.resumeBase64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(resumeFile);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = (error) => reject(error);
+        });
+      } catch (error) {
+        console.error("Error reading resume file:", error);
+        setSubmitMessage("Failed to read resume file. Please try again.");
+        setIsSubmitting(false);
+        return;
+      }
+    }
 
     try {
       const result = await submitJobApplication(applicationData).unwrap();
@@ -202,7 +135,23 @@ export default function CareersPage() {
     document
       .getElementById("application-form")
       ?.scrollIntoView({ behavior: "smooth" });
+    // To preselect, but since select is not controlled, perhaps add state later
   };
+
+  if (jobsLoading) {
+    return <div>Loading jobs...</div>;
+  }
+
+  if (jobsError || !jobsData?.success) {
+    return (
+      <div className="p-6 text-center">
+        <AlertTriangle className="h-8 w-8 text-destructive mx-auto mb-2" />
+        <p className="text-destructive">
+          Failed to load jobs. Please try again later.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen">
@@ -243,7 +192,7 @@ export default function CareersPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {benefits.map((benefit, index) => {
               const IconComponent = benefit.icon;
               return (
@@ -284,7 +233,7 @@ export default function CareersPage() {
           </div>
 
           <div className="grid gap-8">
-            {jobListings.map((job, index) => (
+            {jobs.map((job, index) => (
               <Card
                 key={index}
                 className="group hover:shadow-xl transition-all duration-300 border-border hover:border-primary/50 hover:scale-[1.02]"
@@ -466,18 +415,11 @@ export default function CareersPage() {
                         <SelectValue placeholder="Select a position" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="medical-claims">
-                          Medical Claims Processor
-                        </SelectItem>
-                        <SelectItem value="web-developer">
-                          Full Stack Web Developer
-                        </SelectItem>
-                        <SelectItem value="bpo-specialist">
-                          BPO Operations Specialist
-                        </SelectItem>
-                        <SelectItem value="customer-support">
-                          Customer Support Representative
-                        </SelectItem>
+                        {jobs.map((job) => (
+                          <SelectItem key={job.id} value={job.title}>
+                            {job.title}
+                          </SelectItem>
+                        ))}
                         <SelectItem value="other">Other</SelectItem>
                       </SelectContent>
                     </Select>
@@ -541,6 +483,7 @@ export default function CareersPage() {
                       type="file"
                       accept=".pdf,.doc,.docx"
                       className="hidden"
+                      required
                     />
                   </div>
                 </div>

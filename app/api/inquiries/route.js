@@ -19,10 +19,15 @@ export async function POST(request) {
       id: `INQ-${Date.now()}`,
       name: body.name,
       email: body.email,
+      phone: body.phone || "",
+      company: body.company || "",
       service: body.service,
-      priority: body.priority || "medium",
+      industry: body.industry || "",
+      message: body.message || "",
       status: "new",
+      priority: body.priority || "medium",
       date: new Date(),
+      source: body.source || "Unknown",
     };
 
     await db.collection("Inquiries").insertOne(inquiry);
@@ -71,6 +76,40 @@ export async function GET() {
     console.error("Error fetching inquiries:", error);
     return NextResponse.json(
       { success: false, message: "Failed to fetch inquiries" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request) {
+  try {
+    const db = client.db("RativeDb");
+    const { id } = await request.json();
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, message: "Inquiry ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const result = await db.collection("Inquiries").deleteOne({ id });
+
+    if (result.deletedCount === 0) {
+      return NextResponse.json(
+        { success: false, message: "Inquiry not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Inquiry deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting inquiry:", error);
+    return NextResponse.json(
+      { success: false, message: "Failed to delete inquiry" },
       { status: 500 }
     );
   }

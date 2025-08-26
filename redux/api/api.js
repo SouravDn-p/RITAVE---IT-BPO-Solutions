@@ -1,4 +1,3 @@
-// redux/api.js
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const api = createApi({
@@ -11,7 +10,7 @@ export const api = createApi({
       return headers;
     },
   }),
-  tagTypes: ["User", "JobApplication"],
+  tagTypes: ["User", "JobApplication", "Inquiry", "Job"],
   endpoints: (builder) => ({
     // Auth Endpoints
     registerUser: builder.mutation({
@@ -60,6 +59,48 @@ export const api = createApi({
       query: () => "career-applications",
       providesTags: ["JobApplication"],
     }),
+    deleteJobApplication: builder.mutation({
+      query: (id) => ({
+        url: "career-applications",
+        method: "DELETE",
+        body: { id },
+      }),
+      invalidatesTags: ["JobApplication"],
+    }),
+    // Inquiry Endpoints
+    submitInquiry: builder.mutation({
+      query: (inquiryData) => ({
+        url: "inquiries",
+        method: "POST",
+        body: inquiryData,
+      }),
+      invalidatesTags: ["Inquiry"],
+    }),
+    getInquiries: builder.query({
+      query: () => "inquiries",
+      providesTags: ["Inquiry"],
+    }),
+    deleteInquiry: builder.mutation({
+      query: (id) => ({
+        url: "inquiries",
+        method: "DELETE",
+        body: { id },
+      }),
+      invalidatesTags: ["Inquiry"],
+    }),
+    // Job Endpoints
+    createJob: builder.mutation({
+      query: (jobData) => ({
+        url: "jobs",
+        method: "POST",
+        body: jobData,
+      }),
+      invalidatesTags: ["Job"],
+    }),
+    getJobs: builder.query({
+      query: () => "jobs",
+      providesTags: ["Job"],
+    }),
   }),
 });
 
@@ -71,4 +112,10 @@ export const {
   useUpdateUserMutation,
   useSubmitJobApplicationMutation,
   useGetJobApplicationsQuery,
+  useDeleteJobApplicationMutation,
+  useSubmitInquiryMutation,
+  useGetInquiriesQuery,
+  useDeleteInquiryMutation,
+  useCreateJobMutation,
+  useGetJobsQuery,
 } = api;

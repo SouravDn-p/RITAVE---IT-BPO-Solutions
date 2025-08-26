@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { Navigation } from "@/components/navigation"
-import { Footer } from "@/components/footer"
-import { Button } from "@/components/ui/button"
-import { MessageSquare } from "lucide-react"
-import { ScrollToTop } from "@/components/scroll-to-top"
+import { Navigation } from "@/components/navigation";
+import { Footer } from "@/components/footer";
+import { Button } from "@/components/ui/button";
+import { MessageSquare } from "lucide-react";
+import { ScrollToTop } from "@/components/scroll-to-top";
 
 export default function ContactPage() {
   return (
@@ -18,8 +18,13 @@ export default function ContactPage() {
           className="rounded-full w-14 h-14 bg-green-500 hover:bg-green-600 text-white shadow-lg hover:scale-110 transition-all duration-200 animate-bounce"
           aria-label="Contact us on WhatsApp"
           onClick={() => {
-            const message = encodeURIComponent("Hi! I'm interested in RITAVE's services. Could you help me?")
-            window.open(`https://wa.me/15551234567?text=${message}`, "_blank")
+            const message = encodeURIComponent(
+              "Hi! I'm interested in RITAVE's services. Could you help me?"
+            );
+            window.open(
+              `https://wa.me/+917488438971?text=${message}`,
+              "_blank"
+            );
           }}
         >
           <MessageSquare className="h-6 w-6" />
@@ -29,5 +34,5 @@ export default function ContactPage() {
       <ScrollToTop />
       <Footer />
     </main>
-  )
+  );
 }

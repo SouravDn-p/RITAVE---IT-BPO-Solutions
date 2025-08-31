@@ -133,7 +133,7 @@ export default function AboutPage() {
                 className="w-full h-auto rounded-2xl shadow-lg"
               />
               <div className="absolute -bottom-6 -left-6 bg-accent text-accent-foreground px-6 py-3 rounded-lg font-medium shadow-lg">
-                Serving 500+ Global Clients
+                Serving Global Clients
               </div>
             </div>
           </div>

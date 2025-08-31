@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import client from "@/lib/mongoClient";
+import { ObjectId } from "mongodb";
 
 export async function POST(request) {
   try {
@@ -70,6 +71,7 @@ export async function GET() {
 
     const formattedJobs = jobs.map((job) => ({
       ...job,
+      id: job._id.toString(), // Ensure consistent ID format
       _id: job._id.toString(),
     }));
 

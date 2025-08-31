@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { ArrowRight, Mail, Phone } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { ArrowRight, Mail, Phone } from "lucide-react";
 
 export function CTASection() {
   return (
@@ -39,7 +39,7 @@ export function CTASection() {
                 </div>
                 <div>
                   <p className="font-medium text-foreground">Call Us</p>
-                  <p className="text-muted-foreground">+880 1328764976</p>
+                  <p className="text-muted-foreground">+91 7488438971</p>
                 </div>
               </div>
             </div>

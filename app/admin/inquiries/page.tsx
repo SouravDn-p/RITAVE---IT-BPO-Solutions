@@ -18,6 +18,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
   Search,
@@ -30,46 +33,83 @@ import {
   Download,
   AlertTriangle,
   Info,
+  CheckCircle,
+  Clock,
+  Inbox,
 } from "lucide-react";
 import {
   useGetInquiriesQuery,
   useDeleteInquiryMutation,
+  useUpdateInquiryStatusMutation,
 } from "@/redux/api/api";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function InquiriesManagement() {
-  const { data, error, isLoading } = useGetInquiriesQuery();
+  const { data, error, isLoading } = useGetInquiriesQuery(undefined);
   const [deleteInquiry] = useDeleteInquiryMutation();
+  const [updateInquiryStatus] = useUpdateInquiryStatusMutation();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [serviceFilter, setServiceFilter] = useState("");
+  const [selectedInquiry, setSelectedInquiry] = useState<any>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handleViewInquiry = (inquiryId: string) => {
-    console.log(`Viewing inquiry: ${inquiryId}`);
-    // Implementation for viewing inquiry details
+  const handleViewInquiry = (inquiry: any) => {
+    setSelectedInquiry(inquiry);
+    setIsDialogOpen(true);
   };
 
   const handleContactInquiry = (email: string, phone: string) => {
-    console.log(`Contacting inquiry: ${email}, ${phone}`);
-    // Implementation for contacting inquiry
+    // Open email client
+    window.location.href = `mailto:${email}`;
+    toast.info(`Opening email client for ${email}`);
   };
 
   const handleExportInquiries = () => {
-    console.log("Exporting inquiries");
-    // Implementation for exporting inquiries
+    toast.info("Export feature coming soon");
   };
 
   const handleDeleteInquiry = async (id: string) => {
     try {
       await deleteInquiry(id).unwrap();
-      console.log(`Inquiry ${id} deleted successfully`);
+      toast.success("Inquiry deleted successfully");
     } catch (error) {
+      toast.error("Failed to delete inquiry");
       console.error("Failed to delete inquiry:", error);
+    }
+  };
+
+  const handleUpdateStatus = async (id: string, status: string) => {
+    try {
+      const result = await updateInquiryStatus({ id, status }).unwrap();
+      if (result.success) {
+        toast.success(`Inquiry status updated to ${status}`);
+      } else {
+        toast.error(
+          `Failed to update status: ${result.message || "Unknown error"}`
+        );
+        console.error("Update failed:", result);
+      }
+    } catch (error: any) {
+      console.error("Failed to update inquiry status:", error);
+      toast.error(
+        `Failed to update status: ${
+          error?.data?.message || error?.message || "Unknown error"
+        }`
+      );
     }
   };
 
   const filteredInquiries =
     data?.inquiries?.filter(
-      (inq) =>
+      (inq: any) =>
         (inq.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           inq.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
           inq.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -81,15 +121,18 @@ export default function InquiriesManagement() {
     ) || [];
 
   const stats = {
-    new: filteredInquiries.filter((inq) => inq.status === "new").length,
-    inProgress: filteredInquiries.filter((inq) => inq.status === "in-progress")
-      .length,
-    completed: filteredInquiries.filter((inq) => inq.status === "completed")
-      .length,
+    new: filteredInquiries.filter((inq: any) => inq.status === "new").length,
+    inProgress: filteredInquiries.filter(
+      (inq: any) => inq.status === "in-progress"
+    ).length,
+    completed: filteredInquiries.filter(
+      (inq: any) => inq.status === "completed"
+    ).length,
     responseRate: filteredInquiries.length
       ? Math.round(
           ((filteredInquiries.length -
-            filteredInquiries.filter((inq) => inq.status === "new").length) /
+            filteredInquiries.filter((inq: any) => inq.status === "new")
+              .length) /
             filteredInquiries.length) *
             100
         )
@@ -98,8 +141,76 @@ export default function InquiriesManagement() {
 
   if (isLoading) {
     return (
-      <div className="p-6 text-center">
-        <p>Loading inquiries...</p>
+      <div className="p-6 space-y-6">
+        {/* Header skeleton */}
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-1/4" />
+          <Skeleton className="h-4 w-1/3" />
+        </div>
+
+        {/* Stats grid skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((item) => (
+            <Card key={item} className="border-border">
+              <CardContent className="pt-6">
+                <div className="text-center">
+                  <div className="flex justify-center mb-2">
+                    <Skeleton className="h-12 w-12 rounded-full" />
+                  </div>
+                  <Skeleton className="h-6 w-8 mx-auto mb-1" />
+                  <Skeleton className="h-4 w-16 mx-auto" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Filters skeleton */}
+        <Card className="border-border">
+          <CardContent className="pt-6">
+            <div className="flex flex-col lg:flex-row gap-4">
+              <div className="flex-1">
+                <Skeleton className="h-10 w-full" />
+              </div>
+              <div className="flex gap-2">
+                <Skeleton className="h-10 w-24" />
+                <Skeleton className="h-10 w-32" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Table skeleton */}
+        <Card className="border-border">
+          <CardContent className="pt-6">
+            <div className="space-y-4">
+              <div className="flex justify-between items-center mb-4">
+                <Skeleton className="h-6 w-32" />
+                <Skeleton className="h-8 w-24" />
+              </div>
+              <div className="space-y-2">
+                {[1, 2, 3, 4, 5].map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-center justify-between p-3 rounded-lg border border-border"
+                  >
+                    <div className="flex items-center gap-4">
+                      <Skeleton className="h-10 w-10 rounded-full" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-3 w-24" />
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Skeleton className="h-6 w-16" />
+                      <Skeleton className="h-8 w-8 rounded-full" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -124,12 +235,92 @@ export default function InquiriesManagement() {
     !serviceFilter
   ) {
     return (
-      <Card className="border-border m-6">
-        <CardContent className="pt-6 text-center">
-          <Info className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-          <p className="text-muted-foreground">No inquiries available.</p>
-        </CardContent>
-      </Card>
+      <div className="p-6 space-y-6">
+        {/* Header */}
+        <div className="space-y-2">
+          <h1 className="text-3xl font-serif font-bold text-foreground">
+            Inquiry Management
+          </h1>
+          <p className="text-muted-foreground">
+            View and manage customer inquiries and leads
+          </p>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card className="border-border">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Mail className="h-6 w-6 text-blue-500" />
+                </div>
+                <p className="text-2xl font-bold text-foreground">0</p>
+                <p className="text-sm text-muted-foreground">New Inquiries</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-border">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-yellow-500/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Clock className="h-6 w-6 text-yellow-500" />
+                </div>
+                <p className="text-2xl font-bold text-foreground">0</p>
+                <p className="text-sm text-muted-foreground">In Progress</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-border">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <CheckCircle className="h-6 w-6 text-green-500" />
+                </div>
+                <p className="text-2xl font-bold text-foreground">0</p>
+                <p className="text-sm text-muted-foreground">Completed</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-border">
+            <CardContent className="pt-6">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Mail className="h-6 w-6 text-purple-500" />
+                </div>
+                <p className="text-2xl font-bold text-foreground">0%</p>
+                <p className="text-sm text-muted-foreground">Response Rate</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Empty state */}
+        <Card className="border-border">
+          <CardContent className="pt-12 pb-12 text-center">
+            <Inbox className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-1">
+              No Inquiries Yet
+            </h3>
+            <p className="text-muted-foreground mb-4">
+              When customers reach out, their inquiries will appear here.
+            </p>
+            <div className="flex gap-2 justify-center">
+              <Button
+                variant="outline"
+                className="cursor-pointer hover:scale-105 transition-transform bg-transparent"
+                onClick={() => toast.info("Export feature coming soon")}
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Export
+              </Button>
+              <Button className="cursor-pointer hover:scale-105 transition-transform bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                <Mail className="h-4 w-4 mr-2" />
+                Send Follow-up
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
@@ -204,7 +395,7 @@ export default function InquiriesManagement() {
           <CardContent className="pt-6">
             <div className="text-center">
               <div className="w-12 h-12 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto mb-2">
-                <Percent className="h-6 w-6 text-purple-500" />
+                <Info className="h-6 w-6 text-purple-500" />
               </div>
               <p className="text-2xl font-bold text-foreground">
                 {stats.responseRate}%
@@ -234,7 +425,7 @@ export default function InquiriesManagement() {
               <Button
                 variant="outline"
                 className="cursor-pointer hover:bg-accent/50 transition-colors bg-transparent"
-                onClick={() => console.log("Opening filter options")}
+                onClick={() => toast.info("Filter options coming soon")}
               >
                 <Filter className="h-4 w-4 mr-2" />
                 Filter
@@ -283,26 +474,32 @@ export default function InquiriesManagement() {
             </Card>
           ) : (
             <div className="overflow-x-auto">
-              <Table>
+              <Table className="min-w-full border-collapse">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>ID</TableHead>
+                    <TableHead className="hidden lg:table-cell">ID</TableHead>
                     <TableHead>Contact</TableHead>
-                    <TableHead>Company</TableHead>
-                    <TableHead>Service</TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Company
+                    </TableHead>
+                    <TableHead className="hidden lg:table-cell">
+                      Service
+                    </TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Priority</TableHead>
-                    <TableHead>Date</TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Priority
+                    </TableHead>
+                    <TableHead className="hidden md:table-cell">Date</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredInquiries.map((inquiry) => (
+                  {filteredInquiries.map((inquiry: any) => (
                     <TableRow
                       key={inquiry.id}
                       className="hover:bg-muted/50 transition-colors"
                     >
-                      <TableCell className="font-medium">
+                      <TableCell className="hidden lg:table-cell font-medium">
                         {inquiry.id}
                       </TableCell>
                       <TableCell>
@@ -311,9 +508,15 @@ export default function InquiriesManagement() {
                           <p className="text-sm text-muted-foreground">
                             {inquiry.email}
                           </p>
+                          <p className="text-sm text-muted-foreground md:hidden">
+                            {inquiry.company} • {inquiry.service}
+                          </p>
+                          <p className="text-xs text-muted-foreground md:hidden">
+                            {new Date(inquiry.date).toLocaleDateString()}
+                          </p>
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="hidden md:table-cell">
                         <div>
                           <p className="font-medium">{inquiry.company}</p>
                           <p className="text-sm text-muted-foreground">
@@ -321,7 +524,9 @@ export default function InquiriesManagement() {
                           </p>
                         </div>
                       </TableCell>
-                      <TableCell>{inquiry.service}</TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        {inquiry.service}
+                      </TableCell>
                       <TableCell>
                         <Badge
                           variant={
@@ -342,7 +547,7 @@ export default function InquiriesManagement() {
                           {inquiry.status.replace("-", " ")}
                         </Badge>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="hidden md:table-cell">
                         <Badge
                           variant={
                             inquiry.priority === "high"
@@ -355,7 +560,7 @@ export default function InquiriesManagement() {
                           {inquiry.priority}
                         </Badge>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="hidden md:table-cell">
                         {new Date(inquiry.date).toLocaleDateString()}
                       </TableCell>
                       <TableCell>
@@ -372,7 +577,7 @@ export default function InquiriesManagement() {
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem
                               className="cursor-pointer"
-                              onClick={() => handleViewInquiry(inquiry.id)}
+                              onClick={() => handleViewInquiry(inquiry)}
                             >
                               <Eye className="h-4 w-4 mr-2" />
                               View Details
@@ -401,6 +606,41 @@ export default function InquiriesManagement() {
                               <Phone className="h-4 w-4 mr-2" />
                               Call
                             </DropdownMenuItem>
+                            <DropdownMenuSub>
+                              <DropdownMenuSubTrigger className="cursor-pointer">
+                                <CheckCircle className="h-4 w-4 mr-2" />
+                                Update Status
+                              </DropdownMenuSubTrigger>
+                              <DropdownMenuSubContent>
+                                <DropdownMenuItem
+                                  className="cursor-pointer"
+                                  onClick={() =>
+                                    handleUpdateStatus(inquiry.id, "new")
+                                  }
+                                >
+                                  New
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  className="cursor-pointer"
+                                  onClick={() =>
+                                    handleUpdateStatus(
+                                      inquiry.id,
+                                      "in-progress"
+                                    )
+                                  }
+                                >
+                                  In Progress
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  className="cursor-pointer"
+                                  onClick={() =>
+                                    handleUpdateStatus(inquiry.id, "completed")
+                                  }
+                                >
+                                  Completed
+                                </DropdownMenuItem>
+                              </DropdownMenuSubContent>
+                            </DropdownMenuSub>
                             <DropdownMenuItem
                               className="text-destructive cursor-pointer"
                               onClick={() => handleDeleteInquiry(inquiry.id)}
@@ -419,6 +659,111 @@ export default function InquiriesManagement() {
           )}
         </CardContent>
       </Card>
+
+      {/* Inquiry Details Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Inquiry Details</DialogTitle>
+          </DialogHeader>
+          {selectedInquiry && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h3 className="font-medium text-foreground">Name</h3>
+                  <p className="text-muted-foreground">
+                    {selectedInquiry.name}
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-medium text-foreground">Email</h3>
+                  <p className="text-muted-foreground">
+                    {selectedInquiry.email}
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-medium text-foreground">Phone</h3>
+                  <p className="text-muted-foreground">
+                    {selectedInquiry.phone || "N/A"}
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-medium text-foreground">Company</h3>
+                  <p className="text-muted-foreground">
+                    {selectedInquiry.company || "N/A"}
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-medium text-foreground">Service</h3>
+                  <p className="text-muted-foreground">
+                    {selectedInquiry.service}
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-medium text-foreground">Status</h3>
+                  <Badge
+                    variant={
+                      selectedInquiry.status === "new"
+                        ? "default"
+                        : selectedInquiry.status === "in-progress"
+                        ? "secondary"
+                        : "outline"
+                    }
+                    className={
+                      selectedInquiry.status === "new"
+                        ? "bg-blue-500/10 text-blue-600 border-blue-500/20"
+                        : selectedInquiry.status === "in-progress"
+                        ? "bg-yellow-500/10 text-yellow-600 border-yellow-500/20"
+                        : "bg-green-500/10 text-green-600 border-green-500/20"
+                    }
+                  >
+                    {selectedInquiry.status.replace("-", " ")}
+                  </Badge>
+                </div>
+                <div>
+                  <h3 className="font-medium text-foreground">Priority</h3>
+                  <Badge
+                    variant={
+                      selectedInquiry.priority === "high"
+                        ? "destructive"
+                        : selectedInquiry.priority === "medium"
+                        ? "default"
+                        : "secondary"
+                    }
+                  >
+                    {selectedInquiry.priority}
+                  </Badge>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-medium text-foreground">Message</h3>
+                <div className="mt-2 p-3 bg-muted rounded-lg">
+                  <p className="text-muted-foreground whitespace-pre-wrap">
+                    {selectedInquiry.message || "No message provided."}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    handleContactInquiry(
+                      selectedInquiry.email,
+                      selectedInquiry.phone
+                    )
+                  }
+                >
+                  <Mail className="h-4 w-4 mr-2" />
+                  Contact Client
+                </Button>
+                <Button onClick={() => setIsDialogOpen(false)}>Close</Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

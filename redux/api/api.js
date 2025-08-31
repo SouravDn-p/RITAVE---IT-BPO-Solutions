@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { toast } from "sonner";
 
 export const api = createApi({
   reducerPath: "api",
@@ -19,6 +20,14 @@ export const api = createApi({
         method: "POST",
         body: userData,
       }),
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Registration successful!");
+        } catch (error) {
+          toast.error("Registration failed. Please try again.");
+        }
+      },
     }),
     loginUser: builder.mutation({
       query: (credentials) => ({
@@ -26,6 +35,14 @@ export const api = createApi({
         method: "POST",
         body: credentials,
       }),
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Login successful!");
+        } catch (error) {
+          toast.error("Login failed. Please check your credentials.");
+        }
+      },
     }),
     // User Management Endpoints
     getAllUsers: builder.query({
@@ -45,6 +62,14 @@ export const api = createApi({
       invalidatesTags: (result, error, { email }) => [
         { type: "User", id: email },
       ],
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("User updated successfully!");
+        } catch (error) {
+          toast.error("Failed to update user. Please try again.");
+        }
+      },
     }),
     // Job Application Endpoints
     submitJobApplication: builder.mutation({
@@ -54,6 +79,14 @@ export const api = createApi({
         body: applicationData,
       }),
       invalidatesTags: ["JobApplication"],
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Application submitted successfully!");
+        } catch (error) {
+          toast.error("Failed to submit application. Please try again.");
+        }
+      },
     }),
     getJobApplications: builder.query({
       query: () => "career-applications",
@@ -66,6 +99,30 @@ export const api = createApi({
         body: { id },
       }),
       invalidatesTags: ["JobApplication"],
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Application deleted successfully!");
+        } catch (error) {
+          toast.error("Failed to delete application. Please try again.");
+        }
+      },
+    }),
+    updateJobApplicationStatus: builder.mutation({
+      query: ({ id, status }) => ({
+        url: "career-applications/status",
+        method: "PUT",
+        body: { id, status },
+      }),
+      invalidatesTags: ["JobApplication"],
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Application status updated successfully!");
+        } catch (error) {
+          toast.error("Failed to update application status. Please try again.");
+        }
+      },
     }),
     // Inquiry Endpoints
     submitInquiry: builder.mutation({
@@ -75,6 +132,14 @@ export const api = createApi({
         body: inquiryData,
       }),
       invalidatesTags: ["Inquiry"],
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Inquiry submitted successfully!");
+        } catch (error) {
+          toast.error("Failed to submit inquiry. Please try again.");
+        }
+      },
     }),
     getInquiries: builder.query({
       query: () => "inquiries",
@@ -87,6 +152,30 @@ export const api = createApi({
         body: { id },
       }),
       invalidatesTags: ["Inquiry"],
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Inquiry deleted successfully!");
+        } catch (error) {
+          toast.error("Failed to delete inquiry. Please try again.");
+        }
+      },
+    }),
+    updateInquiryStatus: builder.mutation({
+      query: ({ id, status }) => ({
+        url: "inquiries/status",
+        method: "PUT",
+        body: { id, status },
+      }),
+      invalidatesTags: ["Inquiry"],
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Inquiry status updated successfully!");
+        } catch (error) {
+          toast.error("Failed to update inquiry status. Please try again.");
+        }
+      },
     }),
     // Job Endpoints
     createJob: builder.mutation({
@@ -96,10 +185,49 @@ export const api = createApi({
         body: jobData,
       }),
       invalidatesTags: ["Job"],
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Job created successfully!");
+        } catch (error) {
+          toast.error("Failed to create job. Please try again.");
+        }
+      },
     }),
     getJobs: builder.query({
       query: () => "jobs",
       providesTags: ["Job"],
+    }),
+    updateJob: builder.mutation({
+      query: ({ id, ...jobData }) => ({
+        url: `jobs/${id}`,
+        method: "PUT",
+        body: jobData,
+      }),
+      invalidatesTags: ["Job"],
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Job updated successfully!");
+        } catch (error) {
+          toast.error("Failed to update job. Please try again.");
+        }
+      },
+    }),
+    deleteJob: builder.mutation({
+      query: (id) => ({
+        url: `jobs/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Job"],
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          toast.success("Job deleted successfully!");
+        } catch (error) {
+          toast.error("Failed to delete job. Please try again.");
+        }
+      },
     }),
   }),
 });
@@ -113,9 +241,13 @@ export const {
   useSubmitJobApplicationMutation,
   useGetJobApplicationsQuery,
   useDeleteJobApplicationMutation,
+  useUpdateJobApplicationStatusMutation,
   useSubmitInquiryMutation,
   useGetInquiriesQuery,
   useDeleteInquiryMutation,
+  useUpdateInquiryStatusMutation,
   useCreateJobMutation,
   useGetJobsQuery,
+  useUpdateJobMutation,
+  useDeleteJobMutation,
 } = api;

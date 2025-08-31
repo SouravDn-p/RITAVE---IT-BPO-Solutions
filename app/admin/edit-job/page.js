@@ -1,18 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useCreateJobMutation } from "@/redux/api/api";
+import {
+  useCreateJobMutation,
+  useUpdateJobMutation,
+  useGetJobsQuery,
+} from "@/redux/api/api";
 import { AlertTriangle, CheckCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
-export default function CreateJob() {
+export default function EditJob() {
   const router = useRouter();
-  const [createJob, { isLoading, error }] = useCreateJobMutation();
+  const searchParams = useSearchParams();
+  const jobId = searchParams.get("id");
+
+  const [updateJob, { isLoading: isUpdating }] = useUpdateJobMutation();
+  const [createJob, { isLoading: isCreating }] = useCreateJobMutation();
+  const { data: jobsData } = useGetJobsQuery();
+
   const [formData, setFormData] = useState({
     title: "",
     department: "",
@@ -23,8 +33,25 @@ export default function CreateJob() {
     requirements: "",
     responsibilities: "",
   });
-  const [submitMessage, setSubmitMessage] = useState("");
-  const [isSuccess, setIsSuccess] = useState(false);
+
+  // Load job data when editing
+  useEffect(() => {
+    if (jobId && jobsData?.jobs) {
+      const jobToEdit = jobsData.jobs.find((job) => job.id === jobId);
+      if (jobToEdit) {
+        setFormData({
+          title: jobToEdit.title,
+          department: jobToEdit.department,
+          location: jobToEdit.location,
+          type: jobToEdit.type,
+          experience: jobToEdit.experience,
+          description: jobToEdit.description,
+          requirements: jobToEdit.requirements.join("\n"),
+          responsibilities: jobToEdit.responsibilities.join("\n"),
+        });
+      }
+    }
+  }, [jobId, jobsData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,8 +60,6 @@ export default function CreateJob() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitMessage("");
-    setIsSuccess(false);
 
     const jobData = {
       ...formData,
@@ -47,27 +72,30 @@ export default function CreateJob() {
     };
 
     try {
-      const result = await createJob(jobData).unwrap();
+      let result;
+      if (jobId) {
+        // Update existing job
+        result = await updateJob({ id: jobId, ...jobData }).unwrap();
+      } else {
+        // Create new job
+        result = await createJob(jobData).unwrap();
+      }
+
       if (result.success) {
-        toast.success("Job created successfully!");
-        // Reset form
-        setFormData({
-          title: "",
-          department: "",
-          location: "",
-          type: "",
-          experience: "",
-          description: "",
-          requirements: "",
-          responsibilities: "",
-        });
+        toast.success(
+          jobId ? "Job updated successfully!" : "Job created successfully!"
+        );
         // Redirect to jobs list after 2 seconds
         setTimeout(() => router.push("/admin/jobs"), 2000);
       } else {
-        toast.error("Failed to create job.");
+        toast.error(jobId ? "Failed to update job." : "Failed to create job.");
       }
     } catch (err) {
-      toast.error("An error occurred. Please try again.");
+      toast.error(
+        jobId
+          ? "An error occurred. Please try again."
+          : "An error occurred. Please try again."
+      );
     }
   };
 
@@ -76,10 +104,12 @@ export default function CreateJob() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-serif font-bold text-foreground">
-            Create New Job
+            {jobId ? "Edit Job" : "Create New Job"}
           </h1>
           <p className="text-muted-foreground">
-            Add a new career opportunity for applicants
+            {jobId
+              ? "Update job details"
+              : "Add a new career opportunity for applicants"}
           </p>
         </div>
         <Button variant="outline" onClick={() => router.push("/admin/jobs")}>
@@ -233,8 +263,12 @@ export default function CreateJob() {
             </div>
 
             <div className="flex gap-2">
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Creating..." : "Create Job"}
+              <Button type="submit" disabled={isUpdating || isCreating}>
+                {isUpdating || isCreating
+                  ? "Saving..."
+                  : jobId
+                  ? "Update Job"
+                  : "Create Job"}
               </Button>
               <Button
                 type="button"

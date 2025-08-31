@@ -16,9 +16,16 @@ import {
   LogOut,
   Menu,
   X,
+  Plus,
+  Home,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
+import {
+  useGetInquiriesQuery,
+  useGetJobApplicationsQuery,
+  useGetJobsQuery,
+} from "@/redux/api/api";
 
 const navigation = [
   {
@@ -35,19 +42,21 @@ const navigation = [
     name: "Inquiries",
     href: "/admin/inquiries",
     icon: MessageSquare,
-    badge: "12",
   },
   {
     name: "Career Applications",
     href: "/admin/applications",
     icon: Users,
-    badge: "24",
   },
   {
-    name: "Create Job",
-    href: "/admin/create-job",
+    name: "Jobs",
+    href: "/admin/jobs",
     icon: FileText,
-    badge: "4",
+  },
+  {
+    name: "Home",
+    href: "/",
+    icon: Home,
   },
   // {
   //   name: "Content Management",
@@ -73,8 +82,21 @@ export function AdminSidebar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
+  // Fetch real data for badge counts
+  const { data: inquiriesData } = useGetInquiriesQuery();
+  const { data: applicationsData } = useGetJobApplicationsQuery();
+  const { data: jobsData } = useGetJobsQuery();
+
+  const newInquiriesCount =
+    inquiriesData?.inquiries?.filter((inq: any) => inq.status === "new")
+      .length || 0;
+  const newApplicationsCount =
+    applicationsData?.applications?.filter((app: any) => app.status === "new")
+      .length || 0;
+  const jobsCount = jobsData?.jobs?.length || 0;
+
   const handleSignOut = () => {
-    console.log("sd Admin signing out");
+    console.log("Admin signing out");
     // Implementation for sign out
     // In a real app, this would clear session/tokens and redirect to login
     window.location.href = "/admin/login";
@@ -88,7 +110,7 @@ export function AdminSidebar() {
           variant="outline"
           size="sm"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="bg-background cursor-pointer hover:scale-105 transition-transform" // Added cursor pointer and hover effect
+          className="bg-background cursor-pointer hover:scale-105 transition-transform"
         >
           {isMobileMenuOpen ? (
             <X className="h-4 w-4" />
@@ -109,8 +131,6 @@ export function AdminSidebar() {
           {/* Logo */}
           <div className="flex items-center gap-2 p-6 border-b border-border">
             <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center hover:scale-110 transition-transform">
-              {" "}
-              {/* Added gradient and hover effect */}
               <span className="text-primary-foreground font-bold text-lg">
                 R
               </span>
@@ -128,44 +148,65 @@ export function AdminSidebar() {
             {navigation.map((item) => {
               const IconComponent = item.icon;
               const isActive = pathname === item.href;
+
+              // Determine badge count based on route
+              let badgeCount = null;
+              if (item.name === "Inquiries" && newInquiriesCount > 0) {
+                badgeCount = newInquiriesCount.toString();
+              } else if (
+                item.name === "Career Applications" &&
+                newApplicationsCount > 0
+              ) {
+                badgeCount = newApplicationsCount.toString();
+              } else if (item.name === "Jobs" && jobsCount > 0) {
+                badgeCount = jobsCount.toString();
+              }
+
               return (
                 <Link
                   key={item.name}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer hover:scale-[1.02]", // Added cursor pointer and hover scale effect
+                    "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer hover:scale-[1.02]",
                     isActive
-                      ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-md" // Added gradient for active state
+                      ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-md"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted hover:shadow-sm"
                   )}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <IconComponent className="h-4 w-4" />
                   <span className="flex-1">{item.name}</span>
-                  {item.badge && (
+                  {badgeCount && (
                     <Badge
                       variant={isActive ? "secondary" : "outline"}
                       className={cn(
                         "text-xs transition-all",
                         isActive
                           ? "bg-white/20 text-white border-white/30"
-                          : "hover:bg-primary/10 hover:border-primary/30" // Added hover effects for badges
+                          : "hover:bg-primary/10 hover:border-primary/30"
                       )}
                     >
-                      {item.badge}
+                      {badgeCount}
                     </Badge>
                   )}
                 </Link>
               );
             })}
+
+            {/* Create Job Button */}
+            <Link
+              href="/admin/create-job"
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted hover:shadow-sm cursor-pointer hover:scale-[1.02] transition-all duration-200"
+            >
+              <Plus className="h-4 w-4" />
+              <span className="flex-1">Create Job</span>
+            </Link>
           </nav>
 
           {/* User section */}
           <div className="p-4 border-t border-border">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-8 h-8 bg-gradient-to-br from-accent to-primary rounded-full flex items-center justify-center hover:scale-110 transition-transform">
-                {" "}
-                {/* Added gradient and hover effect */}
                 <span className="text-accent-foreground font-medium text-sm">
                   A
                 </span>
@@ -182,7 +223,7 @@ export function AdminSidebar() {
             <Button
               variant="outline"
               size="sm"
-              className="w-full bg-transparent cursor-pointer hover:scale-105 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 transition-all" // Added cursor pointer and enhanced hover effects
+              className="w-full bg-transparent cursor-pointer hover:scale-105 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 transition-all"
               onClick={handleSignOut}
             >
               <LogOut className="h-4 w-4 mr-2" />
@@ -195,7 +236,7 @@ export function AdminSidebar() {
       {/* Mobile overlay */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-30 lg:hidden cursor-pointer" // Added cursor pointer
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-30 lg:hidden cursor-pointer"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}

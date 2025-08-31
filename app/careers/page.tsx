@@ -26,6 +26,7 @@ import {
   ArrowRight,
   Upload,
   AlertTriangle,
+  Briefcase,
 } from "lucide-react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
@@ -33,6 +34,7 @@ import {
   useSubmitJobApplicationMutation,
   useGetJobsQuery,
 } from "@/redux/api/api";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const benefits = [
   {
@@ -70,7 +72,7 @@ export default function CareersPage() {
     data: jobsData,
     error: jobsError,
     isLoading: jobsLoading,
-  } = useGetJobsQuery();
+  } = useGetJobsQuery(undefined);
 
   const jobs = jobsData?.jobs || [];
 
@@ -100,7 +102,7 @@ export default function CareersPage() {
         applicationData.resumeBase64 = await new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.readAsDataURL(resumeFile);
-          reader.onload = () => resolve(reader.result);
+          reader.onload = () => resolve(reader.result as string);
           reader.onerror = (error) => reject(error);
         });
       } catch (error) {
@@ -118,7 +120,11 @@ export default function CareersPage() {
         setSubmitMessage(
           "Application submitted successfully! We'll get back to you soon."
         );
-        e.currentTarget.reset();
+        // Reset form using ref instead of e.currentTarget.reset()
+        const form = e.target as HTMLFormElement;
+        if (form) {
+          form.reset();
+        }
       } else {
         setSubmitMessage("Failed to submit application. Please try again.");
       }
@@ -139,17 +145,187 @@ export default function CareersPage() {
   };
 
   if (jobsLoading) {
-    return <div>Loading jobs...</div>;
+    return (
+      <main className="min-h-screen">
+        <Navigation />
+        <div className="py-20 bg-gradient-to-br from-background via-muted/20 to-accent/10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center space-y-6">
+              <Skeleton className="h-16 w-3/4 mx-auto" />
+              <Skeleton className="h-6 w-1/2 mx-auto" />
+              <Skeleton className="h-12 w-48 mx-auto" />
+            </div>
+          </div>
+        </div>
+
+        <section className="py-20 bg-background">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center space-y-4 mb-16">
+              <Skeleton className="h-6 w-32 mx-auto" />
+              <Skeleton className="h-12 w-64 mx-auto" />
+              <Skeleton className="h-6 w-96 mx-auto" />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[1, 2, 3, 4].map((item) => (
+                <Card key={item} className="border-border">
+                  <CardContent className="pt-8 pb-6 space-y-4">
+                    <Skeleton className="h-16 w-16 rounded-full mx-auto" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-6 w-3/4 mx-auto" />
+                      <Skeleton className="h-4 w-full" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="py-20 bg-muted/30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center space-y-4 mb-16">
+              <Skeleton className="h-6 w-32 mx-auto" />
+              <Skeleton className="h-12 w-64 mx-auto" />
+            </div>
+
+            <div className="grid gap-8">
+              {[1, 2].map((item) => (
+                <Card key={item} className="border-border">
+                  <CardHeader>
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                      <div className="space-y-2">
+                        <Skeleton className="h-8 w-64" />
+                        <div className="flex flex-wrap gap-2">
+                          <Skeleton className="h-6 w-20" />
+                          <Skeleton className="h-6 w-24" />
+                          <Skeleton className="h-6 w-20" />
+                          <Skeleton className="h-6 w-24" />
+                        </div>
+                      </div>
+                      <Skeleton className="h-10 w-32" />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-5/6" />
+                    <Skeleton className="h-4 w-4/6" />
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <Skeleton className="h-5 w-32 mb-3" />
+                        <div className="space-y-2">
+                          <div className="flex items-start gap-2">
+                            <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
+                            <Skeleton className="h-4 w-5/6" />
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
+                            <Skeleton className="h-4 w-4/6" />
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
+                            <Skeleton className="h-4 w-5/6" />
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <Skeleton className="h-5 w-32 mb-3" />
+                        <div className="space-y-2">
+                          <div className="flex items-start gap-2">
+                            <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
+                            <Skeleton className="h-4 w-5/6" />
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
+                            <Skeleton className="h-4 w-4/6" />
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
+                            <Skeleton className="h-4 w-5/6" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="application-form" className="py-20 bg-background">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center space-y-4 mb-16">
+              <Skeleton className="h-6 w-32 mx-auto" />
+              <Skeleton className="h-12 w-64 mx-auto" />
+              <Skeleton className="h-6 w-96 mx-auto" />
+            </div>
+
+            <Card className="border-border">
+              <CardContent className="pt-8">
+                <div className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-10 w-full" />
+                    </div>
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-10 w-full" />
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-10 w-full" />
+                    </div>
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-10 w-full" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-48" />
+                    <Skeleton className="h-24 w-full" />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-32 w-full rounded-lg" />
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Skeleton className="h-4 w-4 rounded" />
+                    <Skeleton className="h-4 w-64" />
+                  </div>
+
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        <Footer />
+      </main>
+    );
   }
 
   if (jobsError || !jobsData?.success) {
     return (
-      <div className="p-6 text-center">
-        <AlertTriangle className="h-8 w-8 text-destructive mx-auto mb-2" />
-        <p className="text-destructive">
-          Failed to load jobs. Please try again later.
-        </p>
-      </div>
+      <main className="min-h-screen">
+        <Navigation />
+        <div className="p-6 text-center py-20">
+          <AlertTriangle className="h-8 w-8 text-destructive mx-auto mb-2" />
+          <p className="text-destructive">
+            Failed to load jobs. Please try again later.
+          </p>
+        </div>
+        <Footer />
+      </main>
     );
   }
 
@@ -192,7 +368,7 @@ export default function CareersPage() {
             </p>
           </div>
 
-          <div className="grid grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {benefits.map((benefit, index) => {
               const IconComponent = benefit.icon;
               return (
@@ -232,87 +408,122 @@ export default function CareersPage() {
             </h2>
           </div>
 
-          <div className="grid gap-8">
-            {jobs.map((job, index) => (
-              <Card
-                key={index}
-                className="group hover:shadow-xl transition-all duration-300 border-border hover:border-primary/50 hover:scale-[1.02]"
-              >
-                <CardHeader>
-                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                    <div className="space-y-2">
-                      <CardTitle className="text-2xl font-serif">
-                        {job.title}
-                      </CardTitle>
-                      <div className="flex flex-wrap gap-2">
-                        <Badge variant="secondary">{job.department}</Badge>
-                        <Badge
-                          variant="outline"
-                          className="border-accent text-accent"
-                        >
-                          <MapPin className="h-3 w-3 mr-1" />
-                          {job.location}
-                        </Badge>
-                        <Badge variant="outline">
-                          <Clock className="h-3 w-3 mr-1" />
-                          {job.type}
-                        </Badge>
-                        <Badge variant="outline">
-                          <DollarSign className="h-3 w-3 mr-1" />
-                          {job.experience}
-                        </Badge>
+          {jobs.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="max-w-md mx-auto">
+                <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Briefcase className="h-12 w-12 text-muted-foreground" />
+                </div>
+                <h3 className="text-2xl font-serif font-bold text-foreground mb-2">
+                  No Positions Available
+                </h3>
+                <p className="text-muted-foreground mb-6">
+                  We don't have any open positions at the moment. Please check
+                  back later as we're always looking for talented individuals to
+                  join our team.
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    document
+                      .getElementById("application-form")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                >
+                  Submit General Application
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="grid gap-8">
+              {jobs.map((job: any) => (
+                <Card
+                  key={job.id}
+                  className="group hover:shadow-xl transition-all duration-300 border-border hover:border-primary/50 hover:scale-[1.02]"
+                >
+                  <CardHeader>
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                      <div className="space-y-2">
+                        <CardTitle className="text-2xl font-serif">
+                          {job.title}
+                        </CardTitle>
+                        <div className="flex flex-wrap gap-2">
+                          <Badge variant="secondary">{job.department}</Badge>
+                          <Badge
+                            variant="outline"
+                            className="border-accent text-accent"
+                          >
+                            <MapPin className="h-3 w-3 mr-1" />
+                            {job.location}
+                          </Badge>
+                          <Badge variant="outline">
+                            <Clock className="h-3 w-3 mr-1" />
+                            {job.type}
+                          </Badge>
+                          <Badge variant="outline">
+                            <DollarSign className="h-3 w-3 mr-1" />
+                            {job.experience}
+                          </Badge>
+                        </div>
+                      </div>
+                      <Button
+                        className="cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+                        onClick={() => handleApplyNow(job.title)}
+                      >
+                        Apply Now
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <p className="text-muted-foreground">{job.description}</p>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div>
+                        <h4 className="font-semibold text-foreground mb-3">
+                          Requirements:
+                        </h4>
+                        <ul className="space-y-2">
+                          {job.requirements.map(
+                            (req: string, reqIndex: number) => (
+                              <li
+                                key={reqIndex}
+                                className="flex items-start gap-2"
+                              >
+                                <div className="w-1.5 h-1.5 bg-accent rounded-full mt-2" />
+                                <span className="text-sm text-muted-foreground">
+                                  {req}
+                                </span>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-foreground mb-3">
+                          Responsibilities:
+                        </h4>
+                        <ul className="space-y-2">
+                          {job.responsibilities.map(
+                            (resp: string, respIndex: number) => (
+                              <li
+                                key={respIndex}
+                                className="flex items-start gap-2"
+                              >
+                                <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2" />
+                                <span className="text-sm text-muted-foreground">
+                                  {resp}
+                                </span>
+                              </li>
+                            )
+                          )}
+                        </ul>
                       </div>
                     </div>
-                    <Button
-                      className="cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
-                      onClick={() => handleApplyNow(job.title)}
-                    >
-                      Apply Now
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <p className="text-muted-foreground">{job.description}</p>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="font-semibold text-foreground mb-3">
-                        Requirements:
-                      </h4>
-                      <ul className="space-y-2">
-                        {job.requirements.map((req, reqIndex) => (
-                          <li key={reqIndex} className="flex items-start gap-2">
-                            <div className="w-1.5 h-1.5 bg-accent rounded-full mt-2" />
-                            <span className="text-sm text-muted-foreground">
-                              {req}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-foreground mb-3">
-                        Responsibilities:
-                      </h4>
-                      <ul className="space-y-2">
-                        {job.responsibilities.map((resp, respIndex) => (
-                          <li
-                            key={respIndex}
-                            className="flex items-start gap-2"
-                          >
-                            <div className="w-1.5 h-1.5 bg-primary rounded-full mt-2" />
-                            <span className="text-sm text-muted-foreground">
-                              {resp}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -410,19 +621,13 @@ export default function CareersPage() {
                     >
                       Position Applied For *
                     </label>
-                    <Select name="position" required>
-                      <SelectTrigger className="bg-background">
-                        <SelectValue placeholder="Select a position" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {jobs.map((job) => (
-                          <SelectItem key={job.id} value={job.title}>
-                            {job.title}
-                          </SelectItem>
-                        ))}
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      id="position"
+                      name="position"
+                      placeholder="Enter the position you're applying for"
+                      className="bg-background"
+                      required
+                    />
                   </div>
                   <div className="space-y-2">
                     <label
@@ -469,7 +674,10 @@ export default function CareersPage() {
                   >
                     Resume / CV *
                   </label>
-                  <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-accent/50 transition-colors">
+                  <div
+                    className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-accent/50 transition-colors cursor-pointer"
+                    onClick={() => document.getElementById("resume")?.click()}
+                  >
                     <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
                     <p className="text-sm text-muted-foreground mb-2">
                       Click to upload or drag and drop your resume
@@ -484,6 +692,12 @@ export default function CareersPage() {
                       accept=".pdf,.doc,.docx"
                       className="hidden"
                       required
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          console.log("File selected:", file.name);
+                        }
+                      }}
                     />
                   </div>
                 </div>

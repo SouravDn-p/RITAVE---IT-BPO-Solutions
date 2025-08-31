@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import client from "@/lib/mongoClient";
+import { ObjectId } from "mongodb";
 
 export async function POST(request) {
   try {
@@ -63,6 +64,7 @@ export async function GET() {
 
     const formattedApplications = applications.map((app) => ({
       ...app,
+      id: app._id.toString(), // Ensure consistent ID format
       _id: app._id.toString(),
     }));
 
@@ -91,7 +93,10 @@ export async function DELETE(request) {
       );
     }
 
-    const result = await db.collection("JobApplications").deleteOne({ id });
+    // Convert string ID to ObjectId if it's a valid ObjectId format
+    const filter = ObjectId.isValid(id) ? { _id: new ObjectId(id) } : { id };
+
+    const result = await db.collection("JobApplications").deleteOne(filter);
 
     if (result.deletedCount === 0) {
       return NextResponse.json(

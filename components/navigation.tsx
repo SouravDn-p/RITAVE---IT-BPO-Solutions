@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import type { Session } from "next-auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,15 +13,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Menu, X, User, Settings, LogOut, Shield, Home } from "lucide-react";
+import {
+  Menu,
+  X,
+  User,
+  Settings,
+  LogOut,
+  Shield,
+  Home,
+  Briefcase,
+} from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { data: session, status } = useSession();
-
-  const handleConsultation = () => {
-    window.location.href = "/contact#consultation";
+  const { data: session, status } = useSession() as {
+    data: (Session & { user: { role?: string } }) | null;
+    status: string;
   };
 
   const handleSignOut = () => {
@@ -57,6 +66,13 @@ export function Navigation() {
               className="text-foreground hover:text-primary transition-colors relative group py-2"
             >
               Services
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
+            </Link>
+            <Link
+              href="/careers"
+              className="text-foreground hover:text-primary transition-colors relative group py-2"
+            >
+              Careers
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
             </Link>
             <Link
@@ -100,7 +116,7 @@ export function Navigation() {
                     </div>
                   </div>
                   <DropdownMenuSeparator />
-                  {session?.user?.role === "admin" && (
+                  {(session?.user as { role?: string })?.role === "admin" && (
                     <>
                       <DropdownMenuItem asChild>
                         <Link href="/admin" className="cursor-pointer">
@@ -129,13 +145,6 @@ export function Navigation() {
               </DropdownMenu>
             ) : (
               <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  className="hover:scale-105 transition-transform cursor-pointer"
-                  onClick={handleConsultation}
-                >
-                  Get Free Consultation
-                </Button>
                 <Button variant="outline" size="sm" asChild>
                   <Link href="/login">Sign In</Link>
                 </Button>
@@ -179,6 +188,13 @@ export function Navigation() {
                 Services
               </Link>
               <Link
+                href="/careers"
+                className="block px-3 py-2 text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Careers
+              </Link>
+              <Link
                 href="/contact"
                 className="block px-3 py-2 text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
                 onClick={() => setIsMenuOpen(false)}
@@ -200,7 +216,7 @@ export function Navigation() {
                       {session.user?.email}
                     </p>
                   </div>
-                  {session.user?.role === "admin" && (
+                  {(session.user as { role?: string })?.role === "admin" && (
                     <Link
                       href="/admin"
                       className="block px-3 py-2 text-foreground hover:text-primary hover:bg-muted rounded-md transition-colors"
@@ -237,16 +253,6 @@ export function Navigation() {
                   <div className="mb-2">
                     <ThemeToggle />
                   </div>
-                  <Button
-                    size="sm"
-                    className="w-full mb-2 cursor-pointer"
-                    onClick={() => {
-                      handleConsultation();
-                      setIsMenuOpen(false);
-                    }}
-                  >
-                    Get Free Consultation
-                  </Button>
                   <Button
                     variant="outline"
                     size="sm"

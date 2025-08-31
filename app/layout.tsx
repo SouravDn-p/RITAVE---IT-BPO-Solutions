@@ -2,6 +2,7 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Montserrat, Open_Sans } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 import SessionWrapper from "@/components/SessionWrapper";
 import ReduxProvider from "@/components/ReduxProvider";
@@ -47,7 +48,10 @@ export default function RootLayout({
           disableTransitionOnChange={false}
         >
           <SessionWrapper>
-            <ReduxProvider> {children} </ReduxProvider>
+            <ReduxProvider>
+              {children}
+              <Toaster />
+            </ReduxProvider>
           </SessionWrapper>
         </ThemeProvider>
       </body>

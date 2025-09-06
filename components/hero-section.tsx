@@ -107,14 +107,14 @@ export function HeroSection() {
                   HIPAA Compliant
                 </span>
               </div>
-              <div className="flex items-center gap-2 group">
+              {/* <div className="flex items-center gap-2 group">
                 <div className="p-1 rounded-full bg-yellow-500/20">
                   <Award className="h-4 w-4 text-yellow-400 group-hover:scale-110 transition-transform" />
                 </div>
                 <span className="text-sm font-medium text-white/90">
                   SOC 2 Certified
                 </span>
-              </div>
+              </div> */}
               <div className="flex items-center gap-2 group">
                 <div className="p-1 rounded-full bg-blue-500/20">
                   <Clock className="h-4 w-4 text-blue-400 group-hover:scale-110 transition-transform" />
@@ -129,21 +129,30 @@ export function HeroSection() {
           <div className="relative animate-in slide-in-from-right-8 duration-1000 delay-300">
             {/* Central AI Circle */}
             <div className="relative flex items-center justify-center">
-              <div className="w-80 h-80 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-sm border border-white/10 flex items-center justify-center animate-pulse">
+              <div
+                className="w-80 h-80 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-sm border border-white/10 flex items-center justify-center animate-pulse"
+                aria-label="AI-powered solutions visualization"
+              >
                 <div className="w-60 h-60 rounded-full bg-gradient-to-br from-blue-600/30 to-cyan-600/30 backdrop-blur-sm border border-white/20 flex items-center justify-center">
                   <span className="text-6xl font-bold text-white">AI</span>
                 </div>
               </div>
 
               {/* Floating Statistics Cards */}
-              <div className="absolute -top-8 -right-8 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4 animate-float">
+              <div
+                className="absolute -top-8 -right-8 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4 animate-float"
+                aria-label="99.9% accuracy rate statistic"
+              >
                 <div className="text-center">
                   <div className="text-2xl font-bold text-white">99.9%</div>
                   <div className="text-sm text-white/80">Accuracy Rate</div>
                 </div>
               </div>
 
-              <div className="absolute -bottom-8 -left-8 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4 animate-float delay-1000">
+              <div
+                className="absolute -bottom-8 -left-8 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4 animate-float delay-1000"
+                aria-label="24/7 global support availability"
+              >
                 <div className="text-center">
                   <div className="text-2xl font-bold text-white">24/7</div>
                   <div className="text-sm text-white/80">Global Support</div>
@@ -151,27 +160,45 @@ export function HeroSection() {
               </div>
 
               {/* Floating Icon Elements */}
-              <div className="absolute -top-12 left-8 w-12 h-12 bg-gradient-to-br from-red-500 to-pink-500 rounded-xl flex items-center justify-center animate-float delay-500 hover:scale-110 transition-transform">
+              <div
+                className="absolute -top-12 left-8 w-12 h-12 bg-gradient-to-br from-red-500 to-pink-500 rounded-xl flex items-center justify-center animate-float delay-500 hover:scale-110 transition-transform"
+                aria-label="Database management icon"
+              >
                 <Database className="h-6 w-6 text-white" />
               </div>
 
-              <div className="absolute top-8 -right-16 w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center animate-float delay-700 hover:scale-110 transition-transform">
+              <div
+                className="absolute top-8 -right-16 w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center animate-float delay-700 hover:scale-110 transition-transform"
+                aria-label="Global connectivity icon"
+              >
                 <Globe className="h-6 w-6 text-white" />
               </div>
 
-              <div className="absolute -bottom-16 right-8 w-12 h-12 bg-gradient-to-br from-purple-500 to-violet-500 rounded-xl flex items-center justify-center animate-float delay-300 hover:scale-110 transition-transform">
+              <div
+                className="absolute -bottom-16 right-8 w-12 h-12 bg-gradient-to-br from-purple-500 to-violet-500 rounded-xl flex items-center justify-center animate-float delay-300 hover:scale-110 transition-transform"
+                aria-label="Lightning fast processing icon"
+              >
                 <Zap className="h-6 w-6 text-white" />
               </div>
 
-              <div className="absolute bottom-8 -left-16 w-12 h-12 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center animate-float delay-900 hover:scale-110 transition-transform">
+              <div
+                className="absolute bottom-8 -left-16 w-12 h-12 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center animate-float delay-900 hover:scale-110 transition-transform"
+                aria-label="CPU processing power icon"
+              >
                 <Cpu className="h-6 w-6 text-white" />
               </div>
 
-              <div className="absolute top-20 left-20 w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center animate-float delay-1200 hover:scale-110 transition-transform">
+              <div
+                className="absolute top-20 left-20 w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center animate-float delay-1200 hover:scale-110 transition-transform"
+                aria-label="Team collaboration icon"
+              >
                 <Users className="h-5 w-5 text-white" />
               </div>
 
-              <div className="absolute -top-4 right-20 w-10 h-10 bg-gradient-to-br from-pink-500 to-red-500 rounded-lg flex items-center justify-center animate-float delay-400 hover:scale-110 transition-transform">
+              <div
+                className="absolute -top-4 right-20 w-10 h-10 bg-gradient-to-br from-pink-500 to-red-500 rounded-lg flex items-center justify-center animate-float delay-400 hover:scale-110 transition-transform"
+                aria-label="Award winning quality icon"
+              >
                 <Award className="h-5 w-5 text-white" />
               </div>
             </div>

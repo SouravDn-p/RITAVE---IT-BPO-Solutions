@@ -35,6 +35,8 @@ import {
   useGetJobsQuery,
 } from "@/redux/api/api";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import Head from "next/head";
 
 const benefits = [
   {
@@ -64,6 +66,8 @@ const benefits = [
 ];
 
 export default function CareersPage() {
+  const breadcrumbs = [{ name: "Careers", href: "/careers" }];
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
   const { data: session } = useSession();
@@ -146,171 +150,182 @@ export default function CareersPage() {
 
   if (jobsLoading) {
     return (
-      <main className="min-h-screen">
-        <Navigation />
-        <div className="py-20 bg-gradient-to-br from-background via-muted/20 to-accent/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center space-y-6">
-              <Skeleton className="h-16 w-3/4 mx-auto" />
-              <Skeleton className="h-6 w-1/2 mx-auto" />
-              <Skeleton className="h-12 w-48 mx-auto" />
-            </div>
-          </div>
-        </div>
+      <>
+        <Head>
+          <link rel="canonical" href="https://ritave.com/careers" />
+          <title>Careers at RITAVE | Join Our Global Team</title>
+          <meta
+            name="description"
+            content="Explore career opportunities at RITAVE. Join our global team delivering world-class IT and BPO solutions to clients worldwide. Competitive benefits and growth opportunities."
+          />
+          <meta
+            name="keywords"
+            content="careers, job opportunities, BPO jobs, IT jobs, remote work, global team, healthcare BPO, technology solutions"
+          />
+        </Head>
+        <main className="min-h-screen">
+          <Navigation />
 
-        <section className="py-20 bg-background">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center space-y-4 mb-16">
-              <Skeleton className="h-6 w-32 mx-auto" />
-              <Skeleton className="h-12 w-64 mx-auto" />
-              <Skeleton className="h-6 w-96 mx-auto" />
+          <section className="py-6 bg-muted/30">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              {/* <Breadcrumbs items={breadcrumbs} /> */}
             </div>
+          </section>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {[1, 2, 3, 4].map((item) => (
-                <Card key={item} className="border-border">
-                  <CardContent className="pt-8 pb-6 space-y-4">
-                    <Skeleton className="h-16 w-16 rounded-full mx-auto" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-6 w-3/4 mx-auto" />
-                      <Skeleton className="h-4 w-full" />
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
+          <section className="py-20 bg-background">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center space-y-4 mb-16">
+                <Skeleton className="h-6 w-32 mx-auto" />
+                <Skeleton className="h-12 w-64 mx-auto" />
+                <Skeleton className="h-6 w-96 mx-auto" />
+              </div>
 
-        <section className="py-20 bg-muted/30">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center space-y-4 mb-16">
-              <Skeleton className="h-6 w-32 mx-auto" />
-              <Skeleton className="h-12 w-64 mx-auto" />
-            </div>
-
-            <div className="grid gap-8">
-              {[1, 2].map((item) => (
-                <Card key={item} className="border-border">
-                  <CardHeader>
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {[1, 2, 3, 4].map((item) => (
+                  <Card key={item} className="border-border">
+                    <CardContent className="pt-8 pb-6 space-y-4">
+                      <Skeleton className="h-16 w-16 rounded-full mx-auto" />
                       <div className="space-y-2">
-                        <Skeleton className="h-8 w-64" />
-                        <div className="flex flex-wrap gap-2">
-                          <Skeleton className="h-6 w-20" />
-                          <Skeleton className="h-6 w-24" />
-                          <Skeleton className="h-6 w-20" />
-                          <Skeleton className="h-6 w-24" />
+                        <Skeleton className="h-6 w-3/4 mx-auto" />
+                        <Skeleton className="h-4 w-full" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="py-20 bg-muted/30">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center space-y-4 mb-16">
+                <Skeleton className="h-6 w-32 mx-auto" />
+                <Skeleton className="h-12 w-64 mx-auto" />
+              </div>
+
+              <div className="grid gap-8">
+                {[1, 2].map((item) => (
+                  <Card key={item} className="border-border">
+                    <CardHeader>
+                      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                        <div className="space-y-2">
+                          <Skeleton className="h-8 w-64" />
+                          <div className="flex flex-wrap gap-2">
+                            <Skeleton className="h-6 w-20" />
+                            <Skeleton className="h-6 w-24" />
+                            <Skeleton className="h-6 w-20" />
+                            <Skeleton className="h-6 w-24" />
+                          </div>
+                        </div>
+                        <Skeleton className="h-10 w-32" />
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-5/6" />
+                      <Skeleton className="h-4 w-4/6" />
+
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div>
+                          <Skeleton className="h-5 w-32 mb-3" />
+                          <div className="space-y-2">
+                            <div className="flex items-start gap-2">
+                              <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
+                              <Skeleton className="h-4 w-5/6" />
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
+                              <Skeleton className="h-4 w-4/6" />
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
+                              <Skeleton className="h-4 w-5/6" />
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <Skeleton className="h-5 w-32 mb-3" />
+                          <div className="space-y-2">
+                            <div className="flex items-start gap-2">
+                              <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
+                              <Skeleton className="h-4 w-4/6" />
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
+                              <Skeleton className="h-4 w-4/6" />
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
+                              <Skeleton className="h-4 w-5/6" />
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <Skeleton className="h-10 w-32" />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section id="application-form" className="py-20 bg-background">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center space-y-4 mb-16">
+                <Skeleton className="h-6 w-32 mx-auto" />
+                <Skeleton className="h-12 w-64 mx-auto" />
+                <Skeleton className="h-6 w-96 mx-auto" />
+              </div>
+
+              <Card className="border-border">
+                <CardContent className="pt-8">
+                  <div className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-10 w-full" />
+                      </div>
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-10 w-full" />
+                      </div>
                     </div>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-5/6" />
-                    <Skeleton className="h-4 w-4/6" />
 
                     <div className="grid md:grid-cols-2 gap-6">
-                      <div>
-                        <Skeleton className="h-5 w-32 mb-3" />
-                        <div className="space-y-2">
-                          <div className="flex items-start gap-2">
-                            <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
-                            <Skeleton className="h-4 w-5/6" />
-                          </div>
-                          <div className="flex items-start gap-2">
-                            <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
-                            <Skeleton className="h-4 w-4/6" />
-                          </div>
-                          <div className="flex items-start gap-2">
-                            <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
-                            <Skeleton className="h-4 w-5/6" />
-                          </div>
-                        </div>
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-10 w-full" />
                       </div>
-                      <div>
-                        <Skeleton className="h-5 w-32 mb-3" />
-                        <div className="space-y-2">
-                          <div className="flex items-start gap-2">
-                            <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
-                            <Skeleton className="h-4 w-5/6" />
-                          </div>
-                          <div className="flex items-start gap-2">
-                            <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
-                            <Skeleton className="h-4 w-4/6" />
-                          </div>
-                          <div className="flex items-start gap-2">
-                            <Skeleton className="h-1.5 w-1.5 rounded-full mt-2" />
-                            <Skeleton className="h-4 w-5/6" />
-                          </div>
-                        </div>
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-10 w-full" />
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
 
-        <section id="application-form" className="py-20 bg-background">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center space-y-4 mb-16">
-              <Skeleton className="h-6 w-32 mx-auto" />
-              <Skeleton className="h-12 w-64 mx-auto" />
-              <Skeleton className="h-6 w-96 mx-auto" />
-            </div>
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-48" />
+                      <Skeleton className="h-24 w-full" />
+                    </div>
 
-            <Card className="border-border">
-              <CardContent className="pt-8">
-                <div className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Skeleton className="h-4 w-24" />
-                      <Skeleton className="h-10 w-full" />
+                      <Skeleton className="h-32 w-full rounded-lg" />
                     </div>
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-24" />
-                      <Skeleton className="h-10 w-full" />
+
+                    <div className="flex items-center space-x-2">
+                      <Skeleton className="h-4 w-4 rounded" />
+                      <Skeleton className="h-4 w-64" />
                     </div>
+
+                    <Skeleton className="h-12 w-full" />
                   </div>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
 
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-32" />
-                      <Skeleton className="h-10 w-full" />
-                    </div>
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-32" />
-                      <Skeleton className="h-10 w-full" />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-48" />
-                    <Skeleton className="h-24 w-full" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-24" />
-                    <Skeleton className="h-32 w-full rounded-lg" />
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Skeleton className="h-4 w-4 rounded" />
-                    <Skeleton className="h-4 w-64" />
-                  </div>
-
-                  <Skeleton className="h-12 w-full" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
-        <Footer />
-      </main>
+          <Footer />
+        </main>
+      </>
     );
   }
 
@@ -331,6 +346,18 @@ export default function CareersPage() {
 
   return (
     <main className="min-h-screen">
+      <Head>
+        <link rel="canonical" href="https://ritave.com/careers" />
+        <title>Careers at RITAVE | Join Our Global Team</title>
+        <meta
+          name="description"
+          content="Explore career opportunities at RITAVE. Join our global team delivering world-class IT and BPO solutions to clients worldwide. Competitive benefits and growth opportunities."
+        />
+        <meta
+          name="keywords"
+          content="careers, job opportunities, BPO jobs, IT jobs, remote work, global team, healthcare BPO, technology solutions"
+        />
+      </Head>
       <Navigation />
 
       {/* Hero Section */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,8 @@ import { AlertTriangle, CheckCircle } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
-export default function EditJob() {
+// Separate component that uses useSearchParams
+function EditJobContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const jobId = searchParams.get("id");
@@ -282,5 +283,80 @@ export default function EditJob() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+// Loading fallback component
+function EditJobLoading() {
+  return (
+    <div className="p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="h-8 w-48 bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-4 w-64 bg-gray-200 rounded animate-pulse mt-2"></div>
+        </div>
+        <div className="h-10 w-24 bg-gray-200 rounded animate-pulse"></div>
+      </div>
+
+      <div className="border border-gray-200 rounded-lg p-6">
+        <div className="h-6 w-32 bg-gray-200 rounded animate-pulse mb-6"></div>
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <div className="h-4 w-20 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+
+          <div className="space-y-2">
+            <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-24 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+
+          <div className="space-y-2">
+            <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-24 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+
+          <div className="space-y-2">
+            <div className="h-4 w-36 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-24 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+
+          <div className="flex gap-2">
+            <div className="h-10 w-24 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-10 w-24 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function EditJob() {
+  return (
+    <Suspense fallback={<EditJobLoading />}>
+      <EditJobContent />
+    </Suspense>
   );
 }

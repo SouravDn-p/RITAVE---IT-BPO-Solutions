@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,6 +22,39 @@ import {
   Globe,
 } from "lucide-react";
 import Link from "next/link";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import Script from "next/script";
+import Head from "next/head";
+
+export const metadata: Metadata = {
+  title:
+    "IT & BPO Services | RITAVE - Medical Claims Processing, Web Development",
+  description:
+    "Professional IT & BPO services including medical claims processing, web development, data processing, and remote staffing for healthcare, technology, and e-commerce industries. HIPAA compliant solutions.",
+  keywords:
+    "IT services, BPO solutions, medical claims processing, web development, data processing, remote staffing, healthcare BPO, HIPAA compliant, mobile app development, e-commerce solutions",
+  openGraph: {
+    title:
+      "IT & BPO Services | RITAVE - Medical Claims Processing, Web Development",
+    description:
+      "Professional IT & BPO services including medical claims processing, web development, data processing, and remote staffing for healthcare, technology, and e-commerce industries. HIPAA compliant solutions.",
+    images: [
+      {
+        url: "https://ritave.com/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "RITAVE IT & BPO Services",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "IT & BPO Services | RITAVE",
+    description:
+      "Professional IT & BPO services including medical claims processing, web development, data processing, and remote staffing.",
+    images: ["https://ritave.com/og-image.png"],
+  },
+};
 
 const bpoServices = [
   {
@@ -205,68 +239,281 @@ const additionalServices = [
 ];
 
 export default function ServicesPage() {
+  const breadcrumbs = [{ name: "Services", href: "/services" }];
+
   return (
-    <main className="min-h-screen">
-      <Navigation />
+    <>
+      <Head>
+        <link rel="canonical" href="https://ritave.com/services" />
+      </Head>
+      <Script
+        id="services-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            name: "RITAVE Services",
+            description:
+              "Comprehensive IT and BPO solutions designed to help your business grow and succeed in today's competitive market.",
+            itemListElement: [
+              {
+                "@type": "Service",
+                name: "Medical Claims Processing",
+                description:
+                  "Comprehensive medical claims processing with 99.5% accuracy rate and HIPAA compliance.",
+                category: "BPO Services",
+                provider: {
+                  "@type": "Organization",
+                  name: "RITAVE",
+                },
+              },
+              {
+                "@type": "Service",
+                name: "Patient Demographic Entry",
+                description:
+                  "Accurate patient data entry and demographic information management for healthcare providers.",
+                category: "BPO Services",
+                provider: {
+                  "@type": "Organization",
+                  name: "RITAVE",
+                },
+              },
+              {
+                "@type": "Service",
+                name: "Web Development",
+                description:
+                  "Custom web applications and websites using modern technologies like React, Next.js, and WordPress.",
+                category: "IT Services",
+                provider: {
+                  "@type": "Organization",
+                  name: "RITAVE",
+                },
+              },
+            ],
+          }),
+        }}
+      />
+      <main className="min-h-screen">
+        <Navigation />
 
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-background via-muted/20 to-accent/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-6">
-            <h1 className="text-4xl lg:text-6xl font-serif font-bold text-foreground">
-              Our <span className="text-primary">Services</span>
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Comprehensive IT and BPO solutions designed to help your business
-              grow and succeed in today's competitive market.
-            </p>
+        {/* <section className="py-6 bg-muted/30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Breadcrumbs items={breadcrumbs} />
           </div>
-        </div>
-      </section>
+        </section> */}
 
-      {/* BPO Services */}
-      <section className="py-20 bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <Badge variant="outline" className="text-accent border-accent">
-              BPO Services
-            </Badge>
-            <h2 className="text-3xl lg:text-4xl font-serif font-bold text-foreground">
-              Business Process <span className="text-primary">Outsourcing</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Streamline your operations with our specialized BPO services,
-              designed for healthcare and business efficiency.
-            </p>
+        {/* Hero Section */}
+        <section className="py-20 bg-gradient-to-br from-background via-muted/20 to-accent/10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center space-y-6">
+              <h1 className="text-4xl lg:text-6xl font-serif font-bold text-foreground">
+                Our <span className="text-primary">Services</span>
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                Comprehensive IT and BPO solutions designed to help your
+                business grow and succeed in today's competitive market.
+              </p>
+            </div>
           </div>
+        </section>
 
-          <div className="grid lg:grid-cols-3 gap-8 mb-12">
-            {bpoServices.map((service, index) => {
-              const IconComponent = service.icon;
-              return (
-                <Card
-                  key={index}
-                  className="group hover:shadow-lg transition-all duration-300 border-border hover:border-accent/50"
-                >
-                  <CardHeader className="space-y-4">
-                    <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center group-hover:bg-accent/20 transition-colors">
-                      <IconComponent className="h-6 w-6 text-accent" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl font-serif">
-                        {service.title}
-                      </CardTitle>
-                      <p className="text-muted-foreground mt-2">
-                        {service.description}
-                      </p>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div>
-                      <h4 className="font-semibold text-foreground mb-3">
-                        Key Features:
-                      </h4>
-                      <div className="grid grid-cols-1 gap-2">
+        {/* BPO Services */}
+        <section className="py-20 bg-background">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center space-y-4 mb-16">
+              <Badge variant="outline" className="text-accent border-accent">
+                BPO Services
+              </Badge>
+              <h2 className="text-3xl lg:text-4xl font-serif font-bold text-foreground">
+                Business Process{" "}
+                <span className="text-primary">Outsourcing</span>
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                Streamline your operations with our specialized BPO services,
+                designed for healthcare and business efficiency.
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-8 mb-12">
+              {bpoServices.map((service, index) => {
+                const IconComponent = service.icon;
+                return (
+                  <Card
+                    key={index}
+                    className="group hover:shadow-lg transition-all duration-300 border-border hover:border-accent/50"
+                  >
+                    <CardHeader className="space-y-4">
+                      <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+                        <IconComponent className="h-6 w-6 text-accent" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-xl font-serif">
+                          {service.title}
+                        </CardTitle>
+                        <p className="text-muted-foreground mt-2">
+                          {service.description}
+                        </p>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div>
+                        <h4 className="font-semibold text-foreground mb-3">
+                          Key Features:
+                        </h4>
+                        <div className="grid grid-cols-1 gap-2">
+                          {service.features.map((feature, featureIndex) => (
+                            <div
+                              key={featureIndex}
+                              className="flex items-center gap-2"
+                            >
+                              <CheckCircle className="h-4 w-4 text-accent" />
+                              <span className="text-sm text-muted-foreground">
+                                {feature}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-foreground mb-3">
+                          Benefits:
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {service.benefits.map((benefit, benefitIndex) => (
+                            <Badge
+                              key={benefitIndex}
+                              variant="secondary"
+                              className="text-xs"
+                            >
+                              {benefit}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* IT Services */}
+        <section className="py-20 bg-muted/30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center space-y-4 mb-16">
+              <Badge variant="outline" className="text-accent border-accent">
+                IT Services
+              </Badge>
+              <h2 className="text-3xl lg:text-4xl font-serif font-bold text-foreground">
+                Information <span className="text-primary">Technology</span>
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                Modern technology solutions to digitize and optimize your
+                business operations.
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-8">
+              {itServices.map((service, index) => {
+                const IconComponent = service.icon;
+                return (
+                  <Card
+                    key={index}
+                    className="group hover:shadow-lg transition-all duration-300 border-border hover:border-accent/50"
+                  >
+                    <CardHeader className="space-y-4">
+                      <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                        <IconComponent className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-xl font-serif">
+                          {service.title}
+                        </CardTitle>
+                        <p className="text-muted-foreground mt-2">
+                          {service.description}
+                        </p>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div>
+                        <h4 className="font-semibold text-foreground mb-3">
+                          Technologies & Features:
+                        </h4>
+                        <div className="grid grid-cols-1 gap-2">
+                          {service.features.map((feature, featureIndex) => (
+                            <div
+                              key={featureIndex}
+                              className="flex items-center gap-2"
+                            >
+                              <CheckCircle className="h-4 w-4 text-primary" />
+                              <span className="text-sm text-muted-foreground">
+                                {feature}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-foreground mb-3">
+                          Benefits:
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {service.benefits.map((benefit, benefitIndex) => (
+                            <Badge
+                              key={benefitIndex}
+                              variant="outline"
+                              className="text-xs border-primary text-primary"
+                            >
+                              {benefit}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Additional Services */}
+        <section className="py-20 bg-background">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center space-y-4 mb-16">
+              <Badge variant="outline" className="text-accent border-accent">
+                Additional Services
+              </Badge>
+              <h2 className="text-3xl lg:text-4xl font-serif font-bold text-foreground">
+                Specialized <span className="text-primary">Solutions</span>
+              </h2>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 mb-16">
+              {additionalServices.map((service, index) => {
+                const IconComponent = service.icon;
+                return (
+                  <Card
+                    key={index}
+                    className="group hover:shadow-lg transition-all duration-300 border-border hover:border-accent/50"
+                  >
+                    <CardHeader className="space-y-4">
+                      <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+                        <IconComponent className="h-6 w-6 text-accent" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-xl font-serif">
+                          {service.title}
+                        </CardTitle>
+                        <p className="text-muted-foreground mt-2">
+                          {service.description}
+                        </p>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 gap-2">
                         {service.features.map((feature, featureIndex) => (
                           <div
                             key={featureIndex}
@@ -279,238 +526,87 @@ export default function ServicesPage() {
                           </div>
                         ))}
                       </div>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-foreground mb-3">
-                        Benefits:
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {service.benefits.map((benefit, benefitIndex) => (
-                          <Badge
-                            key={benefitIndex}
-                            variant="secondary"
-                            className="text-xs"
-                          >
-                            {benefit}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* IT Services */}
-      <section className="py-20 bg-muted/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <Badge variant="outline" className="text-accent border-accent">
-              IT Services
-            </Badge>
-            <h2 className="text-3xl lg:text-4xl font-serif font-bold text-foreground">
-              Information <span className="text-primary">Technology</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Modern technology solutions to digitize and optimize your business
-              operations.
-            </p>
+        {/* Service Guarantees */}
+        <section className="py-20 bg-muted/30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center space-y-4 mb-16">
+              <h2 className="text-3xl lg:text-4xl font-serif font-bold text-foreground">
+                Our <span className="text-primary">Guarantees</span>
+              </h2>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              <Card className="text-center">
+                <CardContent className="pt-8 pb-6 space-y-4">
+                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto">
+                    <Clock className="h-8 w-8 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-serif font-bold text-foreground mb-2">
+                      24/7 Support
+                    </h3>
+                    <p className="text-muted-foreground">
+                      Round-the-clock availability and support for all your
+                      business needs.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="text-center">
+                <CardContent className="pt-8 pb-6 space-y-4">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                    <Shield className="h-8 w-8 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-serif font-bold text-foreground mb-2">
+                      HIPAA Compliant
+                    </h3>
+                    <p className="text-muted-foreground">
+                      Full compliance with healthcare data security and privacy
+                      regulations.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="text-center">
+                <CardContent className="pt-8 pb-6 space-y-4">
+                  <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto">
+                    <Award className="h-8 w-8 text-accent" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-serif font-bold text-foreground mb-2">
+                      Quality Assured
+                    </h3>
+                    <p className="text-muted-foreground">
+                      Rigorous quality control processes ensuring 99.5%+
+                      accuracy rates.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="text-center">
+              <Link href={"/contact"}>
+                <Button size="lg" className="text-lg px-8">
+                  Get Started Today
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
           </div>
+        </section>
 
-          <div className="grid lg:grid-cols-3 gap-8">
-            {itServices.map((service, index) => {
-              const IconComponent = service.icon;
-              return (
-                <Card
-                  key={index}
-                  className="group hover:shadow-lg transition-all duration-300 border-border hover:border-accent/50"
-                >
-                  <CardHeader className="space-y-4">
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                      <IconComponent className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl font-serif">
-                        {service.title}
-                      </CardTitle>
-                      <p className="text-muted-foreground mt-2">
-                        {service.description}
-                      </p>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div>
-                      <h4 className="font-semibold text-foreground mb-3">
-                        Technologies & Features:
-                      </h4>
-                      <div className="grid grid-cols-1 gap-2">
-                        {service.features.map((feature, featureIndex) => (
-                          <div
-                            key={featureIndex}
-                            className="flex items-center gap-2"
-                          >
-                            <CheckCircle className="h-4 w-4 text-primary" />
-                            <span className="text-sm text-muted-foreground">
-                              {feature}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-foreground mb-3">
-                        Benefits:
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {service.benefits.map((benefit, benefitIndex) => (
-                          <Badge
-                            key={benefitIndex}
-                            variant="outline"
-                            className="text-xs border-primary text-primary"
-                          >
-                            {benefit}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Additional Services */}
-      <section className="py-20 bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <Badge variant="outline" className="text-accent border-accent">
-              Additional Services
-            </Badge>
-            <h2 className="text-3xl lg:text-4xl font-serif font-bold text-foreground">
-              Specialized <span className="text-primary">Solutions</span>
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8 mb-16">
-            {additionalServices.map((service, index) => {
-              const IconComponent = service.icon;
-              return (
-                <Card
-                  key={index}
-                  className="group hover:shadow-lg transition-all duration-300 border-border hover:border-accent/50"
-                >
-                  <CardHeader className="space-y-4">
-                    <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center group-hover:bg-accent/20 transition-colors">
-                      <IconComponent className="h-6 w-6 text-accent" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl font-serif">
-                        {service.title}
-                      </CardTitle>
-                      <p className="text-muted-foreground mt-2">
-                        {service.description}
-                      </p>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 gap-2">
-                      {service.features.map((feature, featureIndex) => (
-                        <div
-                          key={featureIndex}
-                          className="flex items-center gap-2"
-                        >
-                          <CheckCircle className="h-4 w-4 text-accent" />
-                          <span className="text-sm text-muted-foreground">
-                            {feature}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Service Guarantees */}
-      <section className="py-20 bg-muted/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl lg:text-4xl font-serif font-bold text-foreground">
-              Our <span className="text-primary">Guarantees</span>
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <Card className="text-center">
-              <CardContent className="pt-8 pb-6 space-y-4">
-                <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto">
-                  <Clock className="h-8 w-8 text-accent" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-serif font-bold text-foreground mb-2">
-                    24/7 Support
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Round-the-clock availability and support for all your
-                    business needs.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="text-center">
-              <CardContent className="pt-8 pb-6 space-y-4">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                  <Shield className="h-8 w-8 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-serif font-bold text-foreground mb-2">
-                    HIPAA Compliant
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Full compliance with healthcare data security and privacy
-                    regulations.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="text-center">
-              <CardContent className="pt-8 pb-6 space-y-4">
-                <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto">
-                  <Award className="h-8 w-8 text-accent" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-serif font-bold text-foreground mb-2">
-                    Quality Assured
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Rigorous quality control processes ensuring 99.5%+ accuracy
-                    rates.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="text-center">
-            <Link href={"/contact"}>
-              <Button size="lg" className="text-lg px-8">
-                Get Started Today
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <Footer />
-    </main>
+        <Footer />
+      </main>
+    </>
   );
 }

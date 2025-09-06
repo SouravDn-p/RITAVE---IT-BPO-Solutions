@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 import SessionWrapper from "@/components/SessionWrapper";
 import ReduxProvider from "@/components/ReduxProvider";
+import GoogleAnalytics from "@/components/google-analytics";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -20,13 +21,71 @@ const openSans = Open_Sans({
 });
 
 export const metadata: Metadata = {
-  title:
-    "RITAVE - IT & BPO Solutions | Your Partner in Global Business Solutions",
+  title: {
+    default:
+      "RITAVE - IT & BPO Solutions | Your Partner in Global Business Solutions",
+    template: "%s | RITAVE",
+  },
   description:
     "Professional IT & BPO services including medical claims processing, web development, data processing, and remote staffing for healthcare, technology, and e-commerce industries.",
   generator: "v0.app",
-  keywords:
-    "IT services, BPO solutions, medical claims processing, web development, data processing, remote staffing, healthcare BPO, HIPAA compliant",
+  keywords: [
+    "IT services",
+    "BPO solutions",
+    "medical claims processing",
+    "web development",
+    "data processing",
+    "remote staffing",
+    "healthcare BPO",
+    "HIPAA compliant",
+  ],
+  authors: [{ name: "RITAVE" }],
+  creator: "RITAVE",
+  publisher: "RITAVE",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://ritave.com",
+    title:
+      "RITAVE - IT & BPO Solutions | Your Partner in Global Business Solutions",
+    description:
+      "Professional IT & BPO services including medical claims processing, web development, data processing, and remote staffing for healthcare, technology, and e-commerce industries.",
+    siteName: "RITAVE",
+    images: [
+      {
+        url: "https://ritave.com/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "RITAVE - IT & BPO Solutions",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RITAVE - IT & BPO Solutions",
+    description:
+      "Professional IT & BPO services including medical claims processing, web development, data processing, and remote staffing for healthcare, technology, and e-commerce industries.",
+    images: ["https://ritave.com/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "", // Add your Google Search Console verification code here
+  },
 };
 
 export default function RootLayout({
@@ -34,13 +93,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_ID || "";
+
   return (
     <html
       lang="en"
       className={`${montserrat.variable} ${openSans.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <link rel="canonical" href="https://ritave.com" />
+      </head>
       <body>
+        {GA_MEASUREMENT_ID && (
+          <GoogleAnalytics GA_MEASUREMENT_ID={GA_MEASUREMENT_ID} />
+        )}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

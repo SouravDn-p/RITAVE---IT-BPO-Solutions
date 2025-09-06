@@ -6,7 +6,6 @@ import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 import SessionWrapper from "@/components/SessionWrapper";
 import ReduxProvider from "@/components/ReduxProvider";
-import GoogleAnalytics from "@/components/google-analytics";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -83,9 +82,6 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  verification: {
-    google: "", // Add your Google Search Console verification code here
-  },
 };
 
 export default function RootLayout({
@@ -93,21 +89,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_ID || "";
-
   return (
     <html
       lang="en"
       className={`${montserrat.variable} ${openSans.variable}`}
       suppressHydrationWarning
     >
-      <head>
-        <link rel="canonical" href="https://ritave.com" />
-      </head>
       <body>
-        {GA_MEASUREMENT_ID && (
-          <GoogleAnalytics GA_MEASUREMENT_ID={GA_MEASUREMENT_ID} />
-        )}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
